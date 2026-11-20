@@ -1,0 +1,4108 @@
+openapi: 3.0.3
+info:
+  title: নিজের বলার মতো একটা গল্প API
+  version: 1.0.0
+  description: Headless Backend API for role-based community platform
+paths:
+  /api/v1/accounts/admin/users/{user_id}/verification/:
+    post:
+      operationId: v1_accounts_admin_users_verification_create
+      description: Admin revokes verification back to unverified.
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: v1_accounts_admin_users_verification_partial_update
+      description: Admin-only endpoint to edit a verified user's batch and registration_no.
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/google/:
+    post:
+      operationId: v1_accounts_google_create
+      description: Sign up or sign in using a Google ID token verified server-side.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/login/:
+    post:
+      operationId: v1_accounts_login_create
+      description: Standard JWT login endpoint.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/logout/:
+    post:
+      operationId: v1_accounts_logout_create
+      description: Blacklists the refresh token and clears cookies.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/me/:
+    get:
+      operationId: v1_accounts_me_retrieve
+      description: View and update authenticated user profile.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: v1_accounts_me_partial_update
+      description: View and update authenticated user profile.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/me/avatar/:
+    post:
+      operationId: v1_accounts_me_avatar_create
+      description: |-
+        POST /api/v1/accounts/me/avatar/
+        Sets authenticated user's profile picture URL.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/me/sessions/:
+    get:
+      operationId: v1_accounts_me_sessions_retrieve
+      description: List active sessions for current user.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/me/sessions/{session_id}/:
+    delete:
+      operationId: v1_accounts_me_sessions_destroy
+      description: Revoke a specific session.
+      parameters:
+      - in: path
+        name: session_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/accounts/me/verification/:
+    get:
+      operationId: v1_accounts_me_verification_retrieve
+      description: GET /me/verification returns status, latest request, rejection
+        reason and missing fields.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/me/verification/apply/:
+    post:
+      operationId: v1_accounts_me_verification_apply_create
+      description: POST /me/verification/apply to submit a verification application.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/password/change/:
+    post:
+      operationId: v1_accounts_password_change_create
+      description: Change password or set password for Google-only users.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/password/reset/:
+    post:
+      operationId: v1_accounts_password_reset_create
+      description: Request password reset link without revealing user existence.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/password/reset/confirm/:
+    post:
+      operationId: v1_accounts_password_reset_confirm_create
+      description: Confirm password reset with signed token.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/register/:
+    post:
+      operationId: v1_accounts_register_create
+      description: User registration via email and password.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/staff/verification-requests/:
+    get:
+      operationId: v1_accounts_staff_verification_requests_list
+      description: Staff list of all verification requests with filtering and search.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedVerificationRequestList'
+          description: ''
+  /api/v1/accounts/staff/verification-requests/{id}/:
+    get:
+      operationId: v1_accounts_staff_verification_requests_retrieve
+      description: Staff detail view of a single verification request.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationRequest'
+          description: ''
+  /api/v1/accounts/staff/verification-requests/{id}/approve/:
+    post:
+      operationId: v1_accounts_staff_verification_requests_approve_create
+      description: Staff endpoint to approve verification request (with concurrency
+        lock).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/staff/verification-requests/{id}/reject/:
+    post:
+      operationId: v1_accounts_staff_verification_requests_reject_create
+      description: Staff endpoint to reject verification request with required reason.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/token/refresh/:
+    post:
+      operationId: v1_accounts_token_refresh_create
+      description: Refreshes access token with rotation and blacklist.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/verification/confirm/:
+    post:
+      operationId: v1_accounts_verification_confirm_create
+      description: Confirm email verification from link token.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/verification/resend/:
+    post:
+      operationId: v1_accounts_verification_resend_create
+      description: Resend email verification link without revealing user existence.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/admin/analytics/:
+    get:
+      operationId: v1_admin_analytics_retrieve
+      description: |-
+        GET /api/v1/admin/analytics/
+        Aggregated platform analytics with deltas, series, top sessions and batch stats.
+        Admin only.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/admin/audit-logs/:
+    get:
+      operationId: v1_admin_audit_logs_list
+      description: |-
+        GET /api/v1/admin/audit-logs/
+        List system audit logs. Admin only.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAuditLogList'
+          description: ''
+  /api/v1/admin/comments/:
+    get:
+      operationId: v1_admin_comments_list
+      description: |-
+        GET /api/v1/admin/comments/
+        List comments for admin moderation with report counts. Admin only.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAdminCommentList'
+          description: ''
+  /api/v1/admin/comments/{id}/:
+    patch:
+      operationId: v1_admin_comments_partial_update
+      description: |-
+        PATCH /api/v1/admin/comments/{id}/
+        DELETE /api/v1/admin/comments/{id}/
+        Admin only.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: v1_admin_comments_destroy
+      description: |-
+        PATCH /api/v1/admin/comments/{id}/
+        DELETE /api/v1/admin/comments/{id}/
+        Admin only.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/admin/moderators/:
+    post:
+      operationId: v1_admin_moderators_create
+      description: Admin endpoint to create or invite a moderator with password-setup
+        link.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/admin/notify/:
+    post:
+      operationId: v1_admin_notify_create
+      description: |-
+        POST /api/v1/admin/notify/
+        Send in-app and email notification to targeted user groups. Admin only.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/admin/users/:
+    get:
+      operationId: v1_admin_users_list
+      description: |-
+        GET /api/v1/admin/users/
+        List users with search, filtering, and aggregated engagement statistics.
+        Admin only.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAdminUserListList'
+          description: ''
+  /api/v1/admin/users/{id}/:
+    get:
+      operationId: v1_admin_users_retrieve
+      description: |-
+        GET /api/v1/admin/users/{id}/
+        PATCH /api/v1/admin/users/{id}/
+        DELETE /api/v1/admin/users/{id}/ (soft delete)
+        Admin only.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: v1_admin_users_partial_update
+      description: |-
+        GET /api/v1/admin/users/{id}/
+        PATCH /api/v1/admin/users/{id}/
+        DELETE /api/v1/admin/users/{id}/ (soft delete)
+        Admin only.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: v1_admin_users_destroy
+      description: |-
+        GET /api/v1/admin/users/{id}/
+        PATCH /api/v1/admin/users/{id}/
+        DELETE /api/v1/admin/users/{id}/ (soft delete)
+        Admin only.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/admin/users/{id}/assign-moderator/:
+    post:
+      operationId: v1_admin_users_assign_moderator_create
+      description: |-
+        POST /api/v1/admin/users/{id}/assign-moderator/
+        Promotes user to moderator role. Admin only.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/admin/users/{id}/revoke-moderator/:
+    post:
+      operationId: v1_admin_users_revoke_moderator_create
+      description: |-
+        POST /api/v1/admin/users/{id}/revoke-moderator/
+        Revokes moderator role back to member. Admin only.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/announcements/:
+    get:
+      operationId: v1_announcements_list
+      description: Staff CRUD for announcements with priority reordering.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAnnouncementList'
+          description: ''
+    post:
+      operationId: v1_announcements_create
+      description: Staff CRUD for announcements with priority reordering.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnouncementRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AnnouncementRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AnnouncementRequest'
+        required: true
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+          description: ''
+  /api/v1/announcements/{id}/:
+    get:
+      operationId: v1_announcements_retrieve
+      description: Staff CRUD for announcements with priority reordering.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this announcement.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+          description: ''
+    put:
+      operationId: v1_announcements_update
+      description: Staff CRUD for announcements with priority reordering.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this announcement.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnouncementRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AnnouncementRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AnnouncementRequest'
+        required: true
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+          description: ''
+    patch:
+      operationId: v1_announcements_partial_update
+      description: Staff CRUD for announcements with priority reordering.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this announcement.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAnnouncementRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAnnouncementRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAnnouncementRequest'
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+          description: ''
+    delete:
+      operationId: v1_announcements_destroy
+      description: Staff CRUD for announcements with priority reordering.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this announcement.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/announcements/reorder/:
+    post:
+      operationId: v1_announcements_reorder_create
+      description: Accepts an ordered list of announcement IDs and updates priorities
+        descending.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnouncementRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AnnouncementRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AnnouncementRequest'
+        required: true
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+          description: ''
+  /api/v1/community/batches/:
+    get:
+      operationId: v1_community_batches_list
+      description: CRUD for Batches. Staff can write; authenticated members can read.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBatchList'
+          description: ''
+    post:
+      operationId: v1_community_batches_create
+      description: CRUD for Batches. Staff can write; authenticated members can read.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchRequest'
+        required: true
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Batch'
+          description: ''
+  /api/v1/community/batches/{id}/:
+    get:
+      operationId: v1_community_batches_retrieve
+      description: CRUD for Batches. Staff can write; authenticated members can read.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this batch.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Batch'
+          description: ''
+    put:
+      operationId: v1_community_batches_update
+      description: CRUD for Batches. Staff can write; authenticated members can read.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this batch.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchRequest'
+        required: true
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Batch'
+          description: ''
+    patch:
+      operationId: v1_community_batches_partial_update
+      description: CRUD for Batches. Staff can write; authenticated members can read.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this batch.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBatchRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBatchRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBatchRequest'
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Batch'
+          description: ''
+    delete:
+      operationId: v1_community_batches_destroy
+      description: CRUD for Batches. Staff can write; authenticated members can read.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this batch.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/community/batches/{id}/next-session-number/:
+    get:
+      operationId: v1_community_batches_next_session_number_retrieve
+      description: CRUD for Batches. Staff can write; authenticated members can read.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this batch.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Batch'
+          description: ''
+  /api/v1/community/sessions/:
+    get:
+      operationId: v1_community_sessions_list
+      description: |-
+        Main sessions endpoint for members and staff:
+        - Staff see all statuses (draft, scheduled, published, archived).
+        - Regular members see only published, non-deleted sessions.
+        - Soft delete supported.
+      parameters:
+      - in: query
+        name: batch
+        schema:
+          type: integer
+      - in: query
+        name: batch_id
+        schema:
+          type: integer
+      - in: query
+        name: date
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: date_from
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: date_to
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: is_featured
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: search
+        schema:
+          type: string
+      - in: query
+        name: session_number
+        schema:
+          type: integer
+      - in: query
+        name: state
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - archived
+          - draft
+          - published
+          - scheduled
+        description: |-
+          * `draft` - খসড়া (Draft)
+          * `scheduled` - নির্ধারিত (Scheduled)
+          * `published` - প্রকাশিত (Published)
+          * `archived` - আর্কাইভ (Archived)
+      - in: query
+        name: tag
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSessionListList'
+          description: ''
+    post:
+      operationId: v1_community_sessions_create
+      description: |-
+        Main sessions endpoint for members and staff:
+        - Staff see all statuses (draft, scheduled, published, archived).
+        - Regular members see only published, non-deleted sessions.
+        - Soft delete supported.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionCreateUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SessionCreateUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SessionCreateUpdateRequest'
+        required: true
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionCreateUpdate'
+          description: ''
+  /api/v1/community/sessions/{slug}/:
+    get:
+      operationId: v1_community_sessions_retrieve
+      description: |-
+        Main sessions endpoint for members and staff:
+        - Staff see all statuses (draft, scheduled, published, archived).
+        - Regular members see only published, non-deleted sessions.
+        - Soft delete supported.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionDetail'
+          description: ''
+    put:
+      operationId: v1_community_sessions_update
+      description: |-
+        Main sessions endpoint for members and staff:
+        - Staff see all statuses (draft, scheduled, published, archived).
+        - Regular members see only published, non-deleted sessions.
+        - Soft delete supported.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionCreateUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SessionCreateUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SessionCreateUpdateRequest'
+        required: true
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionCreateUpdate'
+          description: ''
+    patch:
+      operationId: v1_community_sessions_partial_update
+      description: |-
+        Main sessions endpoint for members and staff:
+        - Staff see all statuses (draft, scheduled, published, archived).
+        - Regular members see only published, non-deleted sessions.
+        - Soft delete supported.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionCreateUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionCreateUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionCreateUpdateRequest'
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionCreateUpdate'
+          description: ''
+    delete:
+      operationId: v1_community_sessions_destroy
+      description: |-
+        Main sessions endpoint for members and staff:
+        - Staff see all statuses (draft, scheduled, published, archived).
+        - Regular members see only published, non-deleted sessions.
+        - Soft delete supported.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/community/sessions/{slug}/duplicate/:
+    post:
+      operationId: v1_community_sessions_duplicate_create
+      description: 'Staff action: duplicates session as a new draft in the batch.'
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionList'
+          description: ''
+  /api/v1/community/sessions/{slug}/preview/:
+    get:
+      operationId: v1_community_sessions_preview_retrieve
+      description: Staff preview endpoint for drafts & scheduled sessions (not cached,
+        noindex).
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionDetail'
+          description: ''
+  /api/v1/community/sessions/{slug}/publish/:
+    post:
+      operationId: v1_community_sessions_publish_create
+      description: 'Staff action: publish a draft or scheduled session immediately.'
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionList'
+          description: ''
+  /api/v1/community/sessions/today/:
+    get:
+      operationId: v1_community_sessions_today_retrieve
+      description: Published sessions for timezone.localdate(), ordered by batch then
+        session_number.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionList'
+          description: ''
+  /api/v1/community/tags/:
+    get:
+      operationId: v1_community_tags_list
+      description: CRUD for Tags. Staff can write; authenticated members can read.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTagList'
+          description: ''
+    post:
+      operationId: v1_community_tags_create
+      description: CRUD for Tags. Staff can write; authenticated members can read.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TagRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TagRequest'
+        required: true
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+  /api/v1/community/tags/{id}/:
+    get:
+      operationId: v1_community_tags_retrieve
+      description: CRUD for Tags. Staff can write; authenticated members can read.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tag.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+    put:
+      operationId: v1_community_tags_update
+      description: CRUD for Tags. Staff can write; authenticated members can read.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tag.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TagRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TagRequest'
+        required: true
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+    patch:
+      operationId: v1_community_tags_partial_update
+      description: CRUD for Tags. Staff can write; authenticated members can read.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tag.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTagRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTagRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTagRequest'
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+    delete:
+      operationId: v1_community_tags_destroy
+      description: CRUD for Tags. Staff can write; authenticated members can read.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tag.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/interactions/comments/{id}/:
+    patch:
+      operationId: v1_interactions_comments_partial_update
+      description: Update or soft delete an individual comment.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: v1_interactions_comments_destroy
+      description: Update or soft delete an individual comment.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/interactions/comments/{id}/report/:
+    post:
+      operationId: v1_interactions_comments_report_create
+      description: Report an inappropriate comment for staff review.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/interactions/me/activity/:
+    get:
+      operationId: v1_interactions_me_activity_retrieve
+      description: Returns user engagement counts and activity metrics.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/interactions/me/bookmarks/:
+    get:
+      operationId: v1_interactions_me_bookmarks_list
+      description: List all sessions bookmarked by current user.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSessionListList'
+          description: ''
+  /api/v1/interactions/me/notes/:
+    get:
+      operationId: v1_interactions_me_notes_retrieve
+      description: List all session notes and personal notes for current user.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/interactions/personal-notes/:
+    get:
+      operationId: v1_interactions_personal_notes_list
+      description: CRUD for private personal notes not tied to a post.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPersonalNoteList'
+          description: ''
+    post:
+      operationId: v1_interactions_personal_notes_create
+      description: CRUD for private personal notes not tied to a post.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalNoteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PersonalNoteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PersonalNoteRequest'
+        required: true
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalNote'
+          description: ''
+  /api/v1/interactions/personal-notes/{id}/:
+    get:
+      operationId: v1_interactions_personal_notes_retrieve
+      description: CRUD for private personal notes not tied to a post.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalNote'
+          description: ''
+    put:
+      operationId: v1_interactions_personal_notes_update
+      description: CRUD for private personal notes not tied to a post.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalNoteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PersonalNoteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PersonalNoteRequest'
+        required: true
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalNote'
+          description: ''
+    patch:
+      operationId: v1_interactions_personal_notes_partial_update
+      description: CRUD for private personal notes not tied to a post.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPersonalNoteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPersonalNoteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPersonalNoteRequest'
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalNote'
+          description: ''
+    delete:
+      operationId: v1_interactions_personal_notes_destroy
+      description: CRUD for private personal notes not tied to a post.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/interactions/sessions/{slug}/bookmark/:
+    post:
+      operationId: v1_interactions_sessions_bookmark_create
+      description: POST to bookmark a session; DELETE to remove bookmark.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: v1_interactions_sessions_bookmark_destroy
+      description: POST to bookmark a session; DELETE to remove bookmark.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/interactions/sessions/{slug}/comments/:
+    get:
+      operationId: v1_interactions_sessions_comments_retrieve
+      description: List comments or create a new comment on a session.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: v1_interactions_sessions_comments_create
+      description: List comments or create a new comment on a session.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/interactions/sessions/{slug}/like/:
+    post:
+      operationId: v1_interactions_sessions_like_create
+      description: POST to like a session; DELETE to unlike.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: v1_interactions_sessions_like_destroy
+      description: POST to like a session; DELETE to unlike.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/interactions/sessions/{slug}/note/:
+    get:
+      operationId: v1_interactions_sessions_note_retrieve
+      description: Private note on a session (GET, PUT, DELETE).
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: v1_interactions_sessions_note_update
+      description: Private note on a session (GET, PUT, DELETE).
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: v1_interactions_sessions_note_destroy
+      description: Private note on a session (GET, PUT, DELETE).
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/notifications/:
+    get:
+      operationId: v1_notifications_list
+      description: List notifications for current user with unread_count.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotificationList'
+          description: ''
+  /api/v1/notifications/{id}/read/:
+    post:
+      operationId: v1_notifications_read_create
+      description: Mark a specific notification as read.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/notifications/me/preferences/:
+    get:
+      operationId: v1_notifications_me_preferences_retrieve
+      description: View and update current user's notification preferences.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: v1_notifications_me_preferences_partial_update
+      description: View and update current user's notification preferences.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/notifications/read-all/:
+    post:
+      operationId: v1_notifications_read_all_create
+      description: Mark all unread notifications as read for current user.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/public/landing/:
+    get:
+      operationId: v1_public_landing_retrieve
+      description: |-
+        Public landing payload:
+        - Focused announcements (max 2)
+        - Active announcements (max 4)
+        - Featured sessions (max 3)
+        - Latest published public session
+        - Upcoming scheduled sessions (title and date only, no content)
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/public/sessions/:
+    get:
+      operationId: v1_public_sessions_list
+      description: |-
+        Public paginated session list:
+        - Excludes members-only sessions (public visibility only).
+        - Excludes drafts, scheduled, archived, and deleted sessions.
+        - Cached with ETag and Cache-Control headers.
+      parameters:
+      - in: query
+        name: batch
+        schema:
+          type: integer
+      - in: query
+        name: batch_id
+        schema:
+          type: integer
+      - in: query
+        name: date
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: date_from
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: date_to
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: is_featured
+        schema:
+          type: boolean
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: search
+        schema:
+          type: string
+      - in: query
+        name: session_number
+        schema:
+          type: integer
+      - in: query
+        name: state
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - archived
+          - draft
+          - published
+          - scheduled
+        description: |-
+          * `draft` - খসড়া (Draft)
+          * `scheduled` - নির্ধারিত (Scheduled)
+          * `published` - প্রকাশিত (Published)
+          * `archived` - আর্কাইভ (Archived)
+      - in: query
+        name: tag
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPublicSessionListList'
+          description: ''
+  /api/v1/public/sessions/{slug}/:
+    get:
+      operationId: v1_public_sessions_retrieve
+      description: |-
+        Public session detail:
+        - If slug is in SessionSlugHistory, returns 301 permanent redirect hint to new slug.
+        - Drafts, scheduled, archived, deleted return 404.
+        - Members-only sessions return minimal payload to anonymous users.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/public/sessions/{slug}/meta/:
+    get:
+      operationId: v1_public_sessions_meta_retrieve
+      description: Metadata endpoint for Next.js generateMetadata and JSON-LD.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/public/sitemap/:
+    get:
+      operationId: v1_public_sitemap_retrieve
+      description: List of all public, indexable, published session slugs for Next.js
+        sitemap.xml.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/staff/comment-reports/:
+    get:
+      operationId: v1_staff_comment_reports_list
+      description: |-
+        GET /api/v1/staff/comment-reports/
+        List reported comments. Staff (moderators and admins).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedStaffCommentReportListList'
+          description: ''
+  /api/v1/staff/comment-reports/{id}/resolve/:
+    post:
+      operationId: v1_staff_comment_reports_resolve_create
+      description: |-
+        POST /api/v1/staff/comment-reports/{id}/resolve/
+        Resolves or dismisses a reported comment. Optionally hides the comment.
+        Staff only.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/uploads/:
+    post:
+      operationId: v1_uploads_create
+      description: |-
+        POST /api/v1/uploads/
+        Generates a presigned direct upload URL and the permanent file URL.
+        Restricted to JPEG, PNG, WEBP, max 5 MB, throttled per user.
+      tags:
+      - v1
+      security:
+      - jwtCookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    AdminComment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        session:
+          type: string
+          format: uuid
+          readOnly: true
+        session_title:
+          type: string
+          readOnly: true
+        session_slug:
+          type: string
+          readOnly: true
+        author:
+          type: string
+          format: uuid
+          readOnly: true
+        author_email:
+          type: string
+          format: email
+          readOnly: true
+        author_name:
+          type: string
+          readOnly: true
+        content:
+          type: string
+          title: মন্তব্যের বিষয়বস্তু
+        is_hidden:
+          type: boolean
+          description: মডারেটর কর্তৃক লুকানো
+        is_deleted:
+          type: boolean
+        reports_count:
+          type: integer
+          readOnly: true
+          default: 0
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        edited_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - author
+      - author_email
+      - author_name
+      - content
+      - created_at
+      - edited_at
+      - id
+      - reports_count
+      - session
+      - session_slug
+      - session_title
+    AdminUserList:
+      type: object
+      description: Admin view of users with engagement counts (notes counts only,
+        never content!).
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: ইমেইল অ্যাড্রেস
+        first_name:
+          type: string
+          readOnly: true
+          title: নামের প্রথম অংশ
+        last_name:
+          type: string
+          readOnly: true
+          title: নামের শেষ অংশ
+        full_name:
+          type: string
+          readOnly: true
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          readOnly: true
+          title: ব্যবহারকারীর ভূমিকা
+        verification_status:
+          allOf:
+          - $ref: '#/components/schemas/VerificationStatusEnum'
+          readOnly: true
+          title: কমিউনিটি ভেরিফিকেশন স্ট্যাটাস
+        email_verified:
+          type: boolean
+          readOnly: true
+          title: ইমেইল যাচাই হয়েছে কি না
+        batch:
+          type: integer
+          readOnly: true
+          nullable: true
+          description: ব্যবহারকারীর নিজস্ব ব্যাচ
+        batch_number:
+          type: integer
+          readOnly: true
+        batch_name:
+          type: string
+          readOnly: true
+        registration_no:
+          type: string
+          readOnly: true
+          nullable: true
+          title: রেজিস্ট্রেশন নম্বর
+        is_active:
+          type: boolean
+          readOnly: true
+          title: সক্রিয়
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+          title: যোগদানের সময়
+        last_active_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          title: সর্বশেষ সক্রিয়
+        comments_count:
+          type: integer
+          readOnly: true
+          default: 0
+        likes_given_count:
+          type: integer
+          readOnly: true
+          default: 0
+        bookmarks_count:
+          type: integer
+          readOnly: true
+          default: 0
+        notes_count:
+          type: integer
+          readOnly: true
+          default: 0
+        posts_commented_count:
+          type: integer
+          readOnly: true
+          default: 0
+      required:
+      - batch
+      - batch_name
+      - batch_number
+      - bookmarks_count
+      - comments_count
+      - date_joined
+      - email
+      - email_verified
+      - first_name
+      - full_name
+      - id
+      - is_active
+      - last_active_at
+      - last_name
+      - likes_given_count
+      - notes_count
+      - posts_commented_count
+      - registration_no
+      - role
+      - verification_status
+    Announcement:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          title: বিজ্ঞপ্তির শিরোনাম
+          maxLength: 200
+        content:
+          type: string
+          title: বিজ্ঞপ্তির মূল বিষয়বস্তু
+        link:
+          nullable: true
+          title: সম্পর্কিত লিংক
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        image_url:
+          nullable: true
+          title: বিজ্ঞপ্তির ছবি
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        is_focused:
+          type: boolean
+          title: বিশেষ দৃষ্টি আকর্ষণ (Focused)
+          description: সর্বোচ্চ ২টি ফোকাসড বিজ্ঞপ্তি একযোগে সক্রিয় থাকতে পারবে।
+        is_active:
+          type: boolean
+          title: সক্রিয়
+        priority:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          title: অগ্রাধিকার ক্রম
+          description: উচ্চতর সংখ্যা প্রথমে প্রদর্শিত হবে
+        starts_at:
+          type: string
+          format: date-time
+          nullable: true
+          title: শুরুর সময়
+        ends_at:
+          type: string
+          format: date-time
+          nullable: true
+          title: শেষের সময়
+        created_by_name:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - content
+      - created_at
+      - created_by_name
+      - id
+      - title
+    AnnouncementRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          title: বিজ্ঞপ্তির শিরোনাম
+          maxLength: 200
+        content:
+          type: string
+          minLength: 1
+          title: বিজ্ঞপ্তির মূল বিষয়বস্তু
+        link:
+          nullable: true
+          title: সম্পর্কিত লিংক
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        image_url:
+          nullable: true
+          title: বিজ্ঞপ্তির ছবি
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        is_focused:
+          type: boolean
+          title: বিশেষ দৃষ্টি আকর্ষণ (Focused)
+          description: সর্বোচ্চ ২টি ফোকাসড বিজ্ঞপ্তি একযোগে সক্রিয় থাকতে পারবে।
+        is_active:
+          type: boolean
+          title: সক্রিয়
+        priority:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          title: অগ্রাধিকার ক্রম
+          description: উচ্চতর সংখ্যা প্রথমে প্রদর্শিত হবে
+        starts_at:
+          type: string
+          format: date-time
+          nullable: true
+          title: শুরুর সময়
+        ends_at:
+          type: string
+          format: date-time
+          nullable: true
+          title: শেষের সময়
+      required:
+      - content
+      - title
+    AuditLog:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        actor_email:
+          type: string
+          format: email
+          readOnly: true
+        action:
+          type: string
+          readOnly: true
+        target_type:
+          type: string
+          readOnly: true
+        target_id:
+          type: string
+          readOnly: true
+        metadata:
+          readOnly: true
+        ip:
+          type: string
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - action
+      - actor_email
+      - created_at
+      - id
+      - ip
+      - metadata
+      - target_id
+      - target_type
+    Batch:
+      type: object
+      description: Batch serializer with optional next session number.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        number:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: 'ব্যাচ নম্বর (যেমন: ১, ২, ১৬)'
+        name:
+          type: string
+          description: ব্যাচের শিরোনাম বা নাম
+          maxLength: 200
+        start_date:
+          type: string
+          format: date
+          description: ব্যাচ শুরুর তারিখ
+        end_date:
+          type: string
+          format: date
+          nullable: true
+          description: ব্যাচ সমাপ্তির তারিখ
+        is_active:
+          type: boolean
+        next_session_number:
+          type: integer
+          readOnly: true
+      required:
+      - id
+      - name
+      - next_session_number
+      - number
+      - start_date
+    BatchRequest:
+      type: object
+      description: Batch serializer with optional next session number.
+      properties:
+        number:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: 'ব্যাচ নম্বর (যেমন: ১, ২, ১৬)'
+        name:
+          type: string
+          minLength: 1
+          description: ব্যাচের শিরোনাম বা নাম
+          maxLength: 200
+        start_date:
+          type: string
+          format: date
+          description: ব্যাচ শুরুর তারিখ
+        end_date:
+          type: string
+          format: date
+          nullable: true
+          description: ব্যাচ সমাপ্তির তারিখ
+        is_active:
+          type: boolean
+      required:
+      - name
+      - number
+      - start_date
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TypeEnum'
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        message:
+          type: string
+          readOnly: true
+        url:
+          type: string
+          readOnly: true
+          nullable: true
+        is_read:
+          type: boolean
+          readOnly: true
+        read_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - is_read
+      - message
+      - read_at
+      - title
+      - type
+      - url
+    PaginatedAdminCommentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminComment'
+    PaginatedAdminUserListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminUserList'
+    PaginatedAnnouncementList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Announcement'
+    PaginatedAuditLogList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditLog'
+    PaginatedBatchList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Batch'
+    PaginatedNotificationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+    PaginatedPersonalNoteList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonalNote'
+    PaginatedPublicSessionListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicSessionList'
+    PaginatedSessionListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionList'
+    PaginatedStaffCommentReportListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffCommentReportList'
+    PaginatedTagList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+    PaginatedVerificationRequestList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/VerificationRequest'
+    PatchedAnnouncementRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          title: বিজ্ঞপ্তির শিরোনাম
+          maxLength: 200
+        content:
+          type: string
+          minLength: 1
+          title: বিজ্ঞপ্তির মূল বিষয়বস্তু
+        link:
+          nullable: true
+          title: সম্পর্কিত লিংক
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        image_url:
+          nullable: true
+          title: বিজ্ঞপ্তির ছবি
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        is_focused:
+          type: boolean
+          title: বিশেষ দৃষ্টি আকর্ষণ (Focused)
+          description: সর্বোচ্চ ২টি ফোকাসড বিজ্ঞপ্তি একযোগে সক্রিয় থাকতে পারবে।
+        is_active:
+          type: boolean
+          title: সক্রিয়
+        priority:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          title: অগ্রাধিকার ক্রম
+          description: উচ্চতর সংখ্যা প্রথমে প্রদর্শিত হবে
+        starts_at:
+          type: string
+          format: date-time
+          nullable: true
+          title: শুরুর সময়
+        ends_at:
+          type: string
+          format: date-time
+          nullable: true
+          title: শেষের সময়
+    PatchedBatchRequest:
+      type: object
+      description: Batch serializer with optional next session number.
+      properties:
+        number:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: 'ব্যাচ নম্বর (যেমন: ১, ২, ১৬)'
+        name:
+          type: string
+          minLength: 1
+          description: ব্যাচের শিরোনাম বা নাম
+          maxLength: 200
+        start_date:
+          type: string
+          format: date
+          description: ব্যাচ শুরুর তারিখ
+        end_date:
+          type: string
+          format: date
+          nullable: true
+          description: ব্যাচ সমাপ্তির তারিখ
+        is_active:
+          type: boolean
+    PatchedPersonalNoteRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          minLength: 1
+          title: নোটের বিষয়বস্তু
+    PatchedSessionCreateUpdateRequest:
+      type: object
+      description: Staff serializer for creating and updating sessions.
+      properties:
+        title:
+          type: string
+          minLength: 1
+          title: সেশনের শিরোনাম
+          maxLength: 300
+        content:
+          type: string
+          minLength: 1
+          title: সেশনের মূল বিষয়বস্তু
+          description: Markdown format, HTML is sanitized
+        batch:
+          type: integer
+        session_number:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: সেশন নম্বর
+        date:
+          type: string
+          format: date
+          title: সেশনের তারিখ
+        status:
+          $ref: '#/components/schemas/StatusEc3Enum'
+        scheduled_at:
+          type: string
+          format: date-time
+          nullable: true
+        is_featured:
+          type: boolean
+        cover_image_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        visibility:
+          $ref: '#/components/schemas/VisibilityEnum'
+        is_indexable:
+          type: boolean
+        seo_title:
+          type: string
+          nullable: true
+          maxLength: 255
+        seo_description:
+          type: string
+          nullable: true
+          maxLength: 500
+        og_image_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        tag_ids:
+          type: array
+          items:
+            type: integer
+            writeOnly: true
+          writeOnly: true
+    PatchedTagRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        color:
+          type: string
+          minLength: 1
+          description: 'HEX color code e.g. #ff5733'
+          maxLength: 20
+    PersonalNote:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        content:
+          type: string
+          title: নোটের বিষয়বস্তু
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - content
+      - created_at
+      - id
+      - updated_at
+    PersonalNoteRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          minLength: 1
+          title: নোটের বিষয়বস্তু
+      required:
+      - content
+    PublicSessionList:
+      type: object
+      description: Public list serializer - only returns public published sessions.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        title:
+          type: string
+          readOnly: true
+          title: সেশনের শিরোনাম
+        batch_number:
+          type: integer
+          readOnly: true
+        batch_name:
+          type: string
+          readOnly: true
+        session_number:
+          type: integer
+          readOnly: true
+          title: সেশন নম্বর
+        date:
+          type: string
+          format: date
+          readOnly: true
+          title: সেশনের তারিখ
+        published_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        is_featured:
+          type: boolean
+          readOnly: true
+        cover_image_url:
+          type: string
+          format: uri
+          readOnly: true
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        like_count:
+          type: integer
+          readOnly: true
+          default: 0
+        comment_count:
+          type: integer
+          readOnly: true
+          default: 0
+        bookmark_count:
+          type: integer
+          readOnly: true
+          default: 0
+        is_liked_by_me:
+          type: boolean
+          readOnly: true
+          default: false
+        is_bookmarked_by_me:
+          type: boolean
+          readOnly: true
+          default: false
+      required:
+      - batch_name
+      - batch_number
+      - bookmark_count
+      - comment_count
+      - cover_image_url
+      - date
+      - id
+      - is_bookmarked_by_me
+      - is_featured
+      - is_liked_by_me
+      - like_count
+      - published_at
+      - session_number
+      - slug
+      - tags
+      - title
+    RoleEnum:
+      enum:
+      - admin
+      - moderator
+      - member
+      type: string
+      description: |-
+        * `admin` - অ্যাডমিন (Admin)
+        * `moderator` - মডারেটর (Moderator)
+        * `member` - সদস্য (Member)
+    SessionAttachment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        file_url:
+          type: string
+          format: uri
+          maxLength: 500
+        type:
+          type: string
+          description: MIME type or category e.g. pdf, image
+          maxLength: 50
+        caption:
+          type: string
+          maxLength: 255
+      required:
+      - file_url
+      - id
+      - type
+    SessionCreateUpdate:
+      type: object
+      description: Staff serializer for creating and updating sessions.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        title:
+          type: string
+          title: সেশনের শিরোনাম
+          maxLength: 300
+        content:
+          type: string
+          title: সেশনের মূল বিষয়বস্তু
+          description: Markdown format, HTML is sanitized
+        batch:
+          type: integer
+        session_number:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: সেশন নম্বর
+        date:
+          type: string
+          format: date
+          title: সেশনের তারিখ
+        status:
+          $ref: '#/components/schemas/StatusEc3Enum'
+        scheduled_at:
+          type: string
+          format: date-time
+          nullable: true
+        published_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        is_featured:
+          type: boolean
+        cover_image_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        visibility:
+          $ref: '#/components/schemas/VisibilityEnum'
+        is_indexable:
+          type: boolean
+        seo_title:
+          type: string
+          nullable: true
+          maxLength: 255
+        seo_description:
+          type: string
+          nullable: true
+          maxLength: 500
+        og_image_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+      required:
+      - batch
+      - content
+      - id
+      - published_at
+      - session_number
+      - slug
+      - title
+    SessionCreateUpdateRequest:
+      type: object
+      description: Staff serializer for creating and updating sessions.
+      properties:
+        title:
+          type: string
+          minLength: 1
+          title: সেশনের শিরোনাম
+          maxLength: 300
+        content:
+          type: string
+          minLength: 1
+          title: সেশনের মূল বিষয়বস্তু
+          description: Markdown format, HTML is sanitized
+        batch:
+          type: integer
+        session_number:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          title: সেশন নম্বর
+        date:
+          type: string
+          format: date
+          title: সেশনের তারিখ
+        status:
+          $ref: '#/components/schemas/StatusEc3Enum'
+        scheduled_at:
+          type: string
+          format: date-time
+          nullable: true
+        is_featured:
+          type: boolean
+        cover_image_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        visibility:
+          $ref: '#/components/schemas/VisibilityEnum'
+        is_indexable:
+          type: boolean
+        seo_title:
+          type: string
+          nullable: true
+          maxLength: 255
+        seo_description:
+          type: string
+          nullable: true
+          maxLength: 500
+        og_image_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        tag_ids:
+          type: array
+          items:
+            type: integer
+            writeOnly: true
+          writeOnly: true
+      required:
+      - batch
+      - content
+      - session_number
+      - title
+    SessionDetail:
+      type: object
+      description: Detailed post serializer including full content, navigation links
+        and author details.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        title:
+          type: string
+          readOnly: true
+          title: সেশনের শিরোনাম
+        batch:
+          type: integer
+          readOnly: true
+        batch_number:
+          type: integer
+          readOnly: true
+        batch_name:
+          type: string
+          readOnly: true
+        session_number:
+          type: integer
+          readOnly: true
+          title: সেশন নম্বর
+        date:
+          type: string
+          format: date
+          readOnly: true
+          title: সেশনের তারিখ
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEc3Enum'
+          readOnly: true
+        published_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        scheduled_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        is_featured:
+          type: boolean
+          readOnly: true
+        cover_image_url:
+          type: string
+          format: uri
+          readOnly: true
+          nullable: true
+        visibility:
+          allOf:
+          - $ref: '#/components/schemas/VisibilityEnum'
+          readOnly: true
+        state:
+          type: string
+          readOnly: true
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+          readOnly: true
+        like_count:
+          type: integer
+          readOnly: true
+          default: 0
+        comment_count:
+          type: integer
+          readOnly: true
+          default: 0
+        bookmark_count:
+          type: integer
+          readOnly: true
+          default: 0
+        is_liked_by_me:
+          type: boolean
+          readOnly: true
+          default: false
+        is_bookmarked_by_me:
+          type: boolean
+          readOnly: true
+          default: false
+        latest_comment:
+          type: string
+          readOnly: true
+        content:
+          type: string
+          title: সেশনের মূল বিষয়বস্তু
+          description: Markdown format, HTML is sanitized
+        author_name:
+          type: string
+          readOnly: true
+        author_photo_url:
+          type: string
+          format: uri
+          readOnly: true
+        seo_title:
+          type: string
+          nullable: true
+          maxLength: 255
+        seo_description:
+          type: string
+          nullable: true
+          maxLength: 500
+        og_image_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionAttachment'
+          readOnly: true
+        prev_session:
+          type: string
+          readOnly: true
+        next_session:
+          type: string
+          readOnly: true
+      required:
+      - attachments
+      - author_name
+      - author_photo_url
+      - batch
+      - batch_name
+      - batch_number
+      - bookmark_count
+      - comment_count
+      - content
+      - cover_image_url
+      - date
+      - id
+      - is_bookmarked_by_me
+      - is_featured
+      - is_liked_by_me
+      - latest_comment
+      - like_count
+      - next_session
+      - prev_session
+      - published_at
+      - scheduled_at
+      - session_number
+      - slug
+      - state
+      - status
+      - tags
+      - title
+      - visibility
+    SessionList:
+      type: object
+      description: Member & staff list serializer with engagement counts, state and
+        latest comment.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        title:
+          type: string
+          readOnly: true
+          title: সেশনের শিরোনাম
+        batch:
+          type: integer
+          readOnly: true
+        batch_number:
+          type: integer
+          readOnly: true
+        batch_name:
+          type: string
+          readOnly: true
+        session_number:
+          type: integer
+          readOnly: true
+          title: সেশন নম্বর
+        date:
+          type: string
+          format: date
+          readOnly: true
+          title: সেশনের তারিখ
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEc3Enum'
+          readOnly: true
+        published_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        scheduled_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        is_featured:
+          type: boolean
+          readOnly: true
+        cover_image_url:
+          type: string
+          format: uri
+          readOnly: true
+          nullable: true
+        visibility:
+          allOf:
+          - $ref: '#/components/schemas/VisibilityEnum'
+          readOnly: true
+        state:
+          type: string
+          readOnly: true
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+          readOnly: true
+        like_count:
+          type: integer
+          readOnly: true
+          default: 0
+        comment_count:
+          type: integer
+          readOnly: true
+          default: 0
+        bookmark_count:
+          type: integer
+          readOnly: true
+          default: 0
+        is_liked_by_me:
+          type: boolean
+          readOnly: true
+          default: false
+        is_bookmarked_by_me:
+          type: boolean
+          readOnly: true
+          default: false
+        latest_comment:
+          type: string
+          readOnly: true
+      required:
+      - batch
+      - batch_name
+      - batch_number
+      - bookmark_count
+      - comment_count
+      - cover_image_url
+      - date
+      - id
+      - is_bookmarked_by_me
+      - is_featured
+      - is_liked_by_me
+      - latest_comment
+      - like_count
+      - published_at
+      - scheduled_at
+      - session_number
+      - slug
+      - state
+      - status
+      - tags
+      - title
+      - visibility
+    StaffCommentReportList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        comment:
+          type: string
+          format: uuid
+          readOnly: true
+        comment_content:
+          type: string
+          readOnly: true
+        session_title:
+          type: string
+          readOnly: true
+        session_slug:
+          type: string
+          readOnly: true
+        reporter_email:
+          type: string
+          format: email
+          readOnly: true
+        reason:
+          type: string
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StaffCommentReportListStatusEnum'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - comment
+      - comment_content
+      - created_at
+      - id
+      - reason
+      - reporter_email
+      - session_slug
+      - session_title
+      - status
+    StaffCommentReportListStatusEnum:
+      enum:
+      - pending
+      - resolved
+      - dismissed
+      type: string
+      description: |-
+        * `pending` - অপেক্ষমাণ (Pending)
+        * `resolved` - সমাধানকৃত (Resolved)
+        * `dismissed` - বাতিলকৃত (Dismissed)
+    StatusEc3Enum:
+      enum:
+      - draft
+      - scheduled
+      - published
+      - archived
+      type: string
+      description: |-
+        * `draft` - খসড়া (Draft)
+        * `scheduled` - নির্ধারিত (Scheduled)
+        * `published` - প্রকাশিত (Published)
+        * `archived` - আর্কাইভ (Archived)
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        color:
+          type: string
+          description: 'HEX color code e.g. #ff5733'
+          maxLength: 20
+      required:
+      - id
+      - name
+      - slug
+    TagRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        color:
+          type: string
+          minLength: 1
+          description: 'HEX color code e.g. #ff5733'
+          maxLength: 20
+      required:
+      - name
+    TypeEnum:
+      enum:
+      - verification_request
+      - verification_approved
+      - verification_rejected
+      - new_session
+      - announcement
+      - admin_message
+      type: string
+      description: |-
+        * `verification_request` - যাচাইয়ের আবেদন (Verification Request)
+        * `verification_approved` - আবেদন অনুমোদিত (Verification Approved)
+        * `verification_rejected` - আবেদন প্রত্যাখ্যাত (Verification Rejected)
+        * `new_session` - নতুন সেশন (New Session)
+        * `announcement` - বিজ্ঞপ্তি (Announcement)
+        * `admin_message` - অ্যাডমিন বার্তা (Admin Message)
+    UserVerificationSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: ইমেইল অ্যাড্রেস
+          maxLength: 254
+        first_name:
+          type: string
+          title: নামের প্রথম অংশ
+          maxLength: 150
+        last_name:
+          type: string
+          title: নামের শেষ অংশ
+          maxLength: 150
+        full_name:
+          type: string
+          readOnly: true
+      required:
+      - email
+      - full_name
+      - id
+    VerificationRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserVerificationSummary'
+          readOnly: true
+        batch:
+          type: integer
+          readOnly: true
+        batch_number:
+          type: integer
+          readOnly: true
+        batch_name:
+          type: string
+          readOnly: true
+        registration_no:
+          type: string
+          readOnly: true
+          title: রেজিস্ট্রেশন নম্বর (স্ন্যাপশট)
+        status:
+          allOf:
+          - $ref: '#/components/schemas/VerificationStatusEnum'
+          readOnly: true
+        submitted_at:
+          type: string
+          format: date-time
+          readOnly: true
+        reviewed_by_email:
+          type: string
+          format: email
+          readOnly: true
+        reviewed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        rejection_reason:
+          type: string
+          readOnly: true
+          nullable: true
+          title: প্রত্যাখ্যানের কারণ
+        reviewer_note:
+          type: string
+          readOnly: true
+          nullable: true
+          title: পর্যালোচকের অভ্যন্তরীণ মন্তব্য
+        roster_match:
+          type: boolean
+          readOnly: true
+      required:
+      - batch
+      - batch_name
+      - batch_number
+      - id
+      - registration_no
+      - rejection_reason
+      - reviewed_at
+      - reviewed_by_email
+      - reviewer_note
+      - roster_match
+      - status
+      - submitted_at
+      - user
+    VerificationStatusEnum:
+      enum:
+      - unverified
+      - pending
+      - verified
+      - rejected
+      type: string
+      description: |-
+        * `unverified` - যাচাইবিহীন (Unverified)
+        * `pending` - অপেক্ষমাণ (Pending)
+        * `verified` - যাচাইকৃত (Verified)
+        * `rejected` - প্রত্যাখ্যাত (Rejected)
+    VisibilityEnum:
+      enum:
+      - public
+      - members
+      type: string
+      description: |-
+        * `public` - সবার জন্য উন্মুক্ত (Public)
+        * `members` - শুধুমাত্র সদস্যদের জন্য (Members Only)
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    jwtCookieAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT Bearer token in ''Authorization: Bearer <token>'' header or
+        HttpOnly cookie'

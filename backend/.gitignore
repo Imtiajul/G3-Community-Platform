@@ -1,0 +1,94 @@
+# ==========================================
+# Python & Bytecode
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# ==========================================
+# Virtual Environments
+# ==========================================
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# ==========================================
+# Secrets & Environment Variables
+# Keep .env.example tracked, ignore actual secrets
+# ==========================================
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+# ==========================================
+# Django & Local Database
+# ==========================================
+*.sqlite3
+db.sqlite3
+db.sqlite3-journal
+
+# Media uploads & collected static files
+media/
+staticfiles/
+
+# ==========================================
+# Celery & Redis
+# ==========================================
+celerybeat-schedule
+celerybeat-schedule.*
+celerybeat.pid
+
+# ==========================================
+# Testing, Coverage & Linters
+# ==========================================
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.ruff_cache/
+.mypy_cache/
+
+# ==========================================
+# IDEs & Code Editors
+# ==========================================
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# ==========================================
+# OS Generated Files
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+
+# ==========================================
+# Logs & Temporary Files
+# ==========================================
+*.log
+*.pot
+*.bak
+*.tmp
