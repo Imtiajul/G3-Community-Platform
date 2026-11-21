@@ -17,3 +17,4 @@ pytest-django>=4.8.0
 factory_boy>=3.3.0
 requests>=2.31.0
 gunicorn>=22.0.0
+sentry-sdk>=2.0,<3.0
