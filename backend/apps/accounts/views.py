@@ -63,12 +63,13 @@ class RegisterView(views.APIView):
         user = serializer.save()
 
         # Send email verification
-        send_verification_email(user)
+        email_sent = send_verification_email(user)
 
         return Response(
             {
                 "detail": "নিবন্ধন সফল হয়েছে। আপনার ইমেইল ইনবক্স চেক করে অ্যাকাউন্ট ভেরিফাই করুন।",
                 "email": user.email,
+                "email_sent": email_sent,
             },
             status=status.HTTP_201_CREATED,
         )

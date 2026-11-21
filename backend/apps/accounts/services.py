@@ -33,7 +33,7 @@ def send_verification_email(user: User) -> bool:
     """Sends email verification link to user."""
     token = generate_email_verification_token(user)
     verify_url = f"{settings.SITE_BASE_URL}/verify-email?token={token}"
-    subject = "আপনার ইমেইল ভেরিফাই করুন - নিজের বলার মতো একটা গল্প"
+    subject = "আপনার ইমেইল ভেরিফাই করুন - নিজের বলার মতো একটা গল্প ফাউন্ডেশন"
     message = (
         f"প্রিয় {user.full_name},\n\n"
         f"\"নিজের বলার মতো একটা গল্প\" কমিউনিটিতে স্বাগতম। আপনার অ্যাকাউন্টটি সক্রিয় করতে নিচের লিংকে ক্লিক করুন:\n"
@@ -42,16 +42,19 @@ def send_verification_email(user: User) -> bool:
         f"ধন্যবাদ,\nকমিউনিটি অ্যাডমিন টিম"
     )
     try:
-        send_mail(
+        sent_count = send_mail(
             subject=subject,
             message=message,
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[user.email],
             fail_silently=False,
         )
-        return True
+        logger.info(f"Verification email successfully sent to {user.email}")
+        print(f"[AUTH EMAIL] ✓ Verification email successfully sent to: {user.email}")
+        return bool(sent_count)
     except Exception as e:
         logger.error(f"Failed to send verification email to {user.email}: {e}")
+        print(f"[AUTH EMAIL] ✗ Failed to send verification email to {user.email}: {e}")
         return False
 
 
@@ -79,7 +82,7 @@ def send_password_reset_email(user: User) -> bool:
     """Sends password reset link to user."""
     token = generate_password_reset_token(user)
     reset_url = f"{settings.SITE_BASE_URL}/reset-password?token={token}"
-    subject = "পাসওয়ার্ড রিসেট অনুরোধ - নিজের বলার মতো একটা গল্প"
+    subject = "পাসওয়ার্ড রিসেট অনুরোধ - নিজের বলার মতো একটা গল্প ফাউন্ডেশন"
     message = (
         f"প্রিয় {user.full_name},\n\n"
         f"আপনার অ্যাকাউন্টের পাসওয়ার্ড রিসেট করার জন্য একটি অনুরোধ পেয়েছি। পাসওয়ার্ড পরিবর্তন করতে নিচের লিংকে ক্লিক করুন:\n"
@@ -105,7 +108,7 @@ def send_moderator_invite_email(user: User) -> bool:
     """Sends moderator setup invitation link."""
     token = generate_password_reset_token(user)
     setup_url = f"{settings.SITE_BASE_URL}/setup-moderator-password?token={token}"
-    subject = "মডারেটর হিসেবে আমন্ত্রণ - নিজের বলার মতো একটা গল্প"
+    subject = "মডারেটর হিসেবে আমন্ত্রণ - নিজের বলার মতো একটা গল্প ফাউন্ডেশন"
     message = (
         f"প্রিয় {user.full_name},\n\n"
         f"আপনাকে \"নিজের বলার মতো একটা গল্প\" কমিউনিটিতে মডারেটর হিসেবে যুক্ত করা হয়েছে। আপনার পাসওয়ার্ড সেট করতে নিচের লিংকে ক্লিক করুন:\n"
