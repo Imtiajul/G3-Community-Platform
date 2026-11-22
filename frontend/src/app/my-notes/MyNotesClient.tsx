@@ -1,0 +1,556 @@
+"use client";
+
+import React, { useState } from "react";
+import Link from "next/link";
+import { toast } from "sonner";
+import { banglaNumber } from "@/lib/utils";
+import {
+  FileText,
+  Search,
+  BookOpen,
+  Pin,
+  Trash2,
+  Copy,
+  Check,
+  CheckCheck,
+  Lock,
+  ArrowRight,
+  Edit,
+  Quote,
+  Lightbulb,
+  Plus,
+  Bold,
+  Italic,
+  List,
+  CheckSquare,
+} from "lucide-react";
+
+export interface SessionNoteItem {
+  id: number;
+  session_id: number;
+  slug: string;
+  session_title: string;
+  batch: number;
+  session_number: number;
+  content: string;
+  updated_at: string;
+  tags: string[];
+  is_pinned?: boolean;
+}
+
+const INITIAL_SESSION_NOTES: SessionNoteItem[] = [
+  {
+    id: 1,
+    session_id: 12,
+    slug: "honesty-commitment-and-customer-trust",
+    session_title: "ব্যবসায় সততা, প্রতিশ্রুতি এবং গ্রাহকের বিশ্বাস অর্জন",
+    batch: 24,
+    session_number: 12,
+    content:
+      "সততার সাথে প্রতিশ্রুতি রক্ষার বিষয়টি আমাদের টিম মিটিংয়ে আলোচনা করতে হবে। বিশেষ করে সাপ্লাই চেইন ডেলিভারি টাইমিং নিয়ে কোনো অবহেলা নয়। ইকবাল বাহার স্যারের মূল বার্তা: 'কথা দিয়ে কথা রাখা হলো উদ্যোক্তার সবচেয়ে বড় মূলধন।'",
+    updated_at: "আজ, সকাল ১০:৪৫",
+    tags: ["নৈতিকতা", "কাস্টমার_রিলেশন", "অ্যাকশন_প্ল্যান"],
+    is_pinned: true,
+  },
+  {
+    id: 2,
+    session_id: 11,
+    slug: "market-validation-and-first-100-customers",
+    session_title: "বাজার যাচাই এবং প্রথম ১০০ জন বিশ্বস্ত গ্রাহক তৈরি",
+    batch: 24,
+    session_number: 11,
+    content:
+      "প্রথম ২০ জন গ্রাহককে সরাসরি ফোন করে ফিডব্যাক নেওয়ার পরিকল্পনা করতে হবে। লয়ালটি বোনাস অফার করা যেতে পারে। প্রোডাক্টের ত্রুটি লুকিয়ে না রেখে গ্রাহকের কাছ থেকে পরামর্শ হিসেবে নেওয়া শিখতে হবে।",
+    updated_at: "গতকাল",
+    tags: ["মার্কেট_রিসার্চ", "লয়ালটি"],
+    is_pinned: false,
+  },
+  {
+    id: 3,
+    session_id: 8,
+    slug: "pricing-and-cashflow-management-rules",
+    session_title: "মূল্য নির্ধারণ ও ক্যাশফ্লো ঠিক রাখার নিয়ম",
+    batch: 24,
+    session_number: 8,
+    content:
+      "মার্জিন ২০% এর নিচে নামানো যাবে না। কাঁচামালের ব্যাকআপ সোর্স অন্তত দুইটি প্রস্তুত রাখা জরুরি। প্রতিদিনের ক্যাশ ইন ও ক্যাশ আউট এক্সেলে রিয়েলটাইম এন্ট্রি দেওয়ার অভ্যাস চালু রাখতে হবে।",
+    updated_at: "০৫ মে, ২০২৪",
+    tags: ["ফিন্যান্স", "ক্যাশফ্লো"],
+    is_pinned: false,
+  },
+  {
+    id: 4,
+    session_id: 5,
+    slug: "effective-networking-and-communication",
+    session_title: "কার্যকর নেটওয়ার্কিং এবং বিনয়ী যোগাযোগ কৌশল",
+    batch: 24,
+    session_number: 5,
+    content:
+      "শুধুমাত্র প্রয়োজনের সময় কারও সাথে যোগাযোগ না করে, নিঃস্বার্থভাবে সম্পর্ক রক্ষা করতে হবে। সামাজিক মাধ্যমে অন্যের সাফল্যে সাধুবাদ জানানো এবং ইতিবাচক মন্তব্য করা একজন ভালো মানুষের পরিচয়।",
+    updated_at: "২৮ এপ্রিল, ২০২৪",
+    tags: ["নেটওয়ার্কিং", "বিনয়"],
+    is_pinned: false,
+  },
+];
+
+export function MyNotesClient() {
+  const [activeTab, setActiveTab] = useState<"sessions" | "general">("sessions");
+  const [sessionNotes, setSessionNotes] = useState<SessionNoteItem[]>(INITIAL_SESSION_NOTES);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState<"recent" | "asc" | "desc">("recent");
+
+  // General note state
+  const [generalNote, setGeneralNote] = useState(
+    `আজকের প্রতিজ্ঞা: প্রতিদিন অন্তত ২ জন নতুন উদ্যোক্তার সাথে কথা বলব এবং নিজের কাজের সততা শতভাগ রক্ষা করব।\n\nব্যবসায় লাভ হবে কি ক্ষতি তা পরিস্থিতির ওপর নির্ভর করে, কিন্তু নিজের সততা ও প্রতিশ্রুতি ধরে রাখা পুরোপুরি আমার নিজস্ব সিদ্ধান্তের ওপর নির্ভর করে।\n\nকাজের অগ্রাধিকার তালিকা:\n১. কাঁচামালের পাইকারি দর যাচাই করা।\n২. কাস্টমার কেয়ার সার্ভিসকে আরও দ্রুত ও আন্তরিক করা।\n৩. আগামী সপ্তাহের সাপ্লাই স্টক নিশ্চিত করা।`
+  );
+  const [isSaving, setIsSaving] = useState(false);
+  const [lastSavedTime, setLastSavedTime] = useState("১০:৪৮ AM");
+
+  const handleDeleteSessionNote = (id: number) => {
+    const deleted = sessionNotes.find((n) => n.id === id);
+    setSessionNotes((prev) => prev.filter((n) => n.id !== id));
+    toast("নোটটি মুছে ফেলা হয়েছে", {
+      action: {
+        label: "ফেরান",
+        onClick: () => {
+          if (deleted) setSessionNotes((prev) => [deleted, ...prev]);
+        },
+      },
+    });
+  };
+
+  const handleTogglePin = (id: number) => {
+    setSessionNotes((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, is_pinned: !n.is_pinned } : n))
+    );
+    toast.success("নোটের পিন পরিবর্তন করা হয়েছে");
+  };
+
+  const handleSaveGeneralNote = async () => {
+    setIsSaving(true);
+    try {
+      await fetch("/api/bff/interactions/note", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify({ note: generalNote }),
+      });
+      const now = new Date();
+      setLastSavedTime(
+        `${banglaNumber(now.getHours())}:${banglaNumber(
+          now.getMinutes().toString().padStart(2, "0")
+        )}`
+      );
+      toast.success("আপনার সাধারণ নোট সফলভাবে সংরক্ষিত হয়েছে");
+    } catch {
+      toast.error("সংরক্ষণে ব্যর্থ হয়েছে, পুনরায় চেষ্টা করুন");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCopyGeneralNote = async () => {
+    try {
+      await navigator.clipboard.writeText(generalNote);
+      toast.success("নোট ক্লিপবোর্ডে কপি করা হয়েছে");
+    } catch {
+      toast.error("কপি করতে সমস্যা হয়েছে");
+    }
+  };
+
+  const filteredNotes = sessionNotes
+    .filter((note) => {
+      if (!searchQuery.trim()) return true;
+      const q = searchQuery.toLowerCase();
+      return (
+        note.session_title.toLowerCase().includes(q) ||
+        note.content.toLowerCase().includes(q) ||
+        note.tags.some((t) => t.toLowerCase().includes(q))
+      );
+    })
+    .sort((a, b) => {
+      if (a.is_pinned && !b.is_pinned) return -1;
+      if (!a.is_pinned && b.is_pinned) return 1;
+      if (sortOption === "asc") return a.session_number - b.session_number;
+      if (sortOption === "desc") return b.session_number - a.session_number;
+      return b.id - a.id;
+    });
+
+  return (
+    <div className="flex flex-col gap-6 w-full">
+      {/* Page Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 text-xs">
+              <FileText className="w-4 h-4" />
+            </span>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              গোপনীয় নোটবুক
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
+            আমার ব্যক্তিগত নোট
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1 max-w-xl">
+            সেশনের গুরুত্বপূর্ণ অংশ এবং আপনার নিজস্ব চিন্তাভাবনা লিখে রাখার গোপনীয় ডায়েরি।
+          </p>
+        </div>
+
+        {/* Quick Stats Pill */}
+        <div className="flex items-center gap-3 bg-card border border-border px-4 py-2.5 rounded-xl self-start md:self-auto shadow-sm">
+          <div className="flex flex-col text-right">
+            <span className="text-xs text-muted-foreground">মোট সংরক্ষিত নোট</span>
+            <span className="text-sm font-bold text-foreground leading-tight px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-200 mt-0.5">
+              ০৫টি বিষয়
+            </span>
+          </div>
+          <div className="w-9 h-9 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center">
+            <BookOpen className="w-4 h-4" />
+          </div>
+        </div>
+      </div>
+
+      {/* Segmented Tab Navigation */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-1.5 bg-card border border-border rounded-xl shadow-sm">
+        <div className="flex items-center gap-1.5 w-full sm:w-auto" role="tablist">
+          <button
+            type="button"
+            onClick={() => setActiveTab("sessions")}
+            className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-xs font-bold shadow-sm transition-all flex-1 sm:flex-initial ${
+              activeTab === "sessions"
+                ? "bg-foreground text-background"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <BookOpen className="w-4 h-4" />
+            <span>সেশনের নোট ({banglaNumber(sessionNotes.length)})</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("general")}
+            className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-xs font-bold transition-all flex-1 sm:flex-initial ${
+              activeTab === "general"
+                ? "bg-foreground text-background"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            <span>সাধারণ নোট (১)</span>
+          </button>
+        </div>
+
+        <div className="flex items-center justify-between sm:justify-end gap-3 px-1.5">
+          <div className="hidden sm:flex items-center gap-2 pr-2 text-xs text-muted-foreground">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span>সিঙ্ক করা সম্পন্ন</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setActiveTab("general")}
+            className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-foreground text-background text-xs font-semibold hover:opacity-95 transition-all shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            <span>নতুন নোট</span>
+          </button>
+        </div>
+      </div>
+
+      {/* SESSIONS VIEW */}
+      {activeTab === "sessions" && (
+        <section className="flex flex-col gap-6">
+          {/* Search, Filter & Quick Count */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-card border border-border p-3 rounded-xl shadow-sm">
+            <div className="relative w-full sm:max-w-xs flex items-center">
+              <Search className="w-4 h-4 text-muted-foreground absolute left-3 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="নোট খুঁজুন (যেমন: সততা, গ্রাহক)..."
+                className="w-full h-10 pl-9 pr-3 bg-secondary/40 border border-border rounded-lg text-xs placeholder:text-muted-foreground focus:outline-none focus:bg-card focus:ring-1 focus:ring-primary transition-all"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+              <span className="text-xs text-muted-foreground px-2">সাজান:</span>
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value as "recent" | "asc" | "desc")}
+                aria-label="নোট সাজানোর ধরন"
+                className="h-10 px-3 bg-secondary/40 border border-border text-foreground rounded-lg text-xs focus:outline-none cursor-pointer"
+              >
+                <option value="recent">সর্বশেষ সম্পাদিত</option>
+                <option value="asc">সেশন নম্বর (ছোট থেকে বড়)</option>
+                <option value="desc">সেশন নম্বর (বড় থেকে ছোট)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Note Cards List */}
+          {filteredNotes.length > 0 ? (
+            <div className="flex flex-col gap-4">
+              {filteredNotes.map((note) => (
+                <article
+                  key={note.id}
+                  className={`bg-card border rounded-xl p-5 md:p-6 transition-all flex flex-col gap-3 group shadow-sm hover:border-foreground/30 ${
+                    note.is_pinned ? "border-emerald-300 bg-emerald-50/10" : "border-border"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-200 font-bold text-xs">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-700" />
+                        সেশন {banglaNumber(note.session_number)} • ব্যাচ {banglaNumber(note.batch)}
+                      </span>
+                      <span className="inline-flex items-center gap-1 text-muted-foreground text-xs">
+                        সম্পাদনা: {note.updated_at}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => handleTogglePin(note.id)}
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
+                          note.is_pinned
+                            ? "text-emerald-700 bg-emerald-100"
+                            : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                        }`}
+                        title={note.is_pinned ? "পিন সরান" : "পিন করুন"}
+                      >
+                        <Pin className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteSessionNote(note.id)}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                        title="মুছে ফেলুন"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h2 className="text-base sm:text-lg font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
+                      {note.session_title}
+                    </h2>
+                    <p className="text-sm text-muted-foreground mt-2 line-clamp-3 leading-relaxed">
+                      {note.content}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                    {note.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-2.5 py-0.5 rounded-full bg-secondary text-secondary-foreground text-xs font-medium border border-border"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="pt-3 mt-1 flex items-center justify-between border-t border-border/60">
+                    <Link
+                      href={`/sessions/${note.slug}`}
+                      className="inline-flex items-center gap-1.5 text-foreground hover:text-primary text-xs font-semibold transition-colors"
+                    >
+                      <span>সেশনে যান ও পূর্ণ নোট দেখুন</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                    </Link>
+
+                    <Link
+                      href={`/sessions/${note.slug}#notes`}
+                      className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground text-xs px-2.5 py-1 rounded-md hover:bg-secondary transition-colors"
+                    >
+                      <Edit className="w-3.5 h-3.5" />
+                      <span>সম্পাদনা</span>
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center p-12 text-center bg-card rounded-xl border border-border">
+              <BookOpen className="w-10 h-10 text-muted-foreground mb-2" />
+              <p className="text-base font-bold text-foreground">কোনো নোট খুঁজে পাওয়া যায়নি</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                অন্য কোনো শব্দ দিয়ে অনুসন্ধান করে দেখুন।
+              </p>
+            </div>
+          )}
+
+          {/* Editorial Quote Banner */}
+          <div className="p-6 rounded-xl bg-card border border-border relative overflow-hidden flex flex-col md:flex-row items-center gap-5 mt-2 shadow-sm">
+            <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 border border-emerald-200">
+              <Quote className="w-6 h-6" />
+            </div>
+            <div className="flex-1 text-center md:text-left">
+              <p className="text-sm sm:text-base text-foreground italic leading-relaxed font-serif">
+                &ldquo;শেখার পর তা লিখে রাখা এবং প্রয়োগ করাই একজন ভালো উদ্যোক্তা হওয়ার প্রথম ভিত্তি।
+                জ্ঞান যখন আচরণে রূপ নেয়, তখনই সাফল্য আসে।&rdquo;
+              </p>
+              <span className="text-xs text-primary font-bold mt-1 block">
+                — ইকবাল বাহার জাহিদ
+              </span>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* GENERAL NOTE VIEW */}
+      {activeTab === "general" && (
+        <section className="flex flex-col gap-6">
+          <div className="bg-card border border-border rounded-xl p-6 md:p-8 flex flex-col gap-5 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-border/60">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-teal-600" />
+                  <h2 className="text-lg font-bold text-foreground">
+                    সাধারণ নোট (দৈনিক চিন্তাভাবনা ও লক্ষ্য)
+                  </h2>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  আপনার ব্যক্তিগত ভাবনা, ব্যবসায়িক প্ল্যান ও দৈনন্দিন লক্ষ্যগুলো এখানে মুক্তভাবে লিখুন।
+                </p>
+              </div>
+
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-muted-foreground border border-border text-xs self-start sm:self-auto font-medium">
+                <Lock className="w-3.5 h-3.5 text-primary" />
+                <span>🔒 শুধু আপনি আপনার নোট দেখতে পারেন</span>
+              </span>
+            </div>
+
+            {/* Status bar */}
+            <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-lg bg-secondary/30 border border-border text-xs">
+              <div className="flex items-center gap-2 text-teal-700 font-medium">
+                <CheckCheck className="w-4 h-4" />
+                <span>
+                  {isSaving
+                    ? "সংরক্ষণ করা হচ্ছে..."
+                    : `স্বয়ংক্রিয়ভাবে সংরক্ষিত (${lastSavedTime})`}
+                </span>
+              </div>
+              <div className="text-muted-foreground font-mono">
+                {banglaNumber(generalNote.length)} / {banglaNumber(5000)} অক্ষর
+              </div>
+            </div>
+
+            {/* Quick Toolbar */}
+            <div className="flex items-center gap-1 p-1 bg-secondary/30 border border-border rounded-lg text-muted-foreground">
+              <button
+                type="button"
+                onClick={() => setGeneralNote((prev) => prev + " **বোল্ড টেক্সট** ")}
+                className="w-8 h-8 rounded flex items-center justify-center hover:bg-card hover:text-foreground transition-colors"
+                title="বোল্ড"
+              >
+                <Bold className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setGeneralNote((prev) => prev + " *ইটালিক টেক্সট* ")}
+                className="w-8 h-8 rounded flex items-center justify-center hover:bg-card hover:text-foreground transition-colors"
+                title="ইটালিক"
+              >
+                <Italic className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setGeneralNote((prev) => prev + "\n- তালিকা আইটেম")}
+                className="w-8 h-8 rounded flex items-center justify-center hover:bg-card hover:text-foreground transition-colors"
+                title="তালিকা"
+              >
+                <List className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setGeneralNote((prev) => prev + "\n> উদ্ধৃতি")}
+                className="w-8 h-8 rounded flex items-center justify-center hover:bg-card hover:text-foreground transition-colors"
+                title="উদ্ধৃতি"
+              >
+                <Quote className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setGeneralNote((prev) => prev + "\n- [ ] কাজ")}
+                className="w-8 h-8 rounded flex items-center justify-center hover:bg-card hover:text-foreground transition-colors"
+                title="চেকলিস্ট"
+              >
+                <CheckSquare className="w-4 h-4" />
+              </button>
+              <div className="h-4 w-px bg-border mx-1" />
+              <span className="text-[11px] text-muted-foreground px-2 hidden sm:inline">
+                স্বয়ংক্রিয় ড্রাফট সক্রিয়
+              </span>
+            </div>
+
+            {/* Note Textarea */}
+            <div className="relative w-full">
+              <textarea
+                value={generalNote}
+                onChange={(e) => setGeneralNote(e.target.value)}
+                placeholder="আপনার মনের কথা, আগামীকালের লক্ষ্য বা ব্যবসায়িক পরিকল্পনা লিখুন..."
+                rows={10}
+                className="w-full p-4 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary leading-relaxed transition-all resize-y text-sm sm:text-base font-bangla"
+              />
+            </div>
+
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirm("আপনি কি নিশ্চিতভাবে এই সাধারণ নোটটি মুছে ফেলতে চান?")) {
+                    setGeneralNote("");
+                    toast.success("নোট পরিষ্কার করা হয়েছে");
+                  }
+                }}
+                className="inline-flex items-center justify-center gap-1.5 text-destructive hover:bg-destructive/10 px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors self-start sm:self-auto"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>মুছে ফেলুন</span>
+              </button>
+
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleCopyGeneralNote}
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-card border border-border text-foreground hover:bg-secondary text-xs font-semibold transition-colors"
+                >
+                  <Copy className="w-4 h-4" />
+                  <span>কপি করুন</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveGeneralNote}
+                  disabled={isSaving}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-2 rounded-lg bg-foreground text-background hover:opacity-95 text-xs font-semibold transition-all shadow-sm disabled:opacity-50"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>{isSaving ? "সংরক্ষিত হচ্ছে..." : "নোট সেভ করুন"}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Weekly Reflection Prompt Card */}
+          <div className="bg-card border border-border p-6 rounded-xl flex items-start gap-4 shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-900 flex items-center justify-center shrink-0 border border-amber-200">
+              <Lightbulb className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-foreground">সাপ্তাহিক আত্মসমীক্ষা প্রশ্ন</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
+                &ldquo;এই সপ্তাহে আমি এমন কী কাজ করেছি যা একজন ভালো মানুষ এবং বিশ্বাসযোগ্য উদ্যোক্তা হিসেবে আমাকে এক ধাপ এগিয়ে নিয়েছে?&rdquo; — এই প্রশ্নের উত্তরটি সাধারণ নোটে টুকে রাখতে পারেন।
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}

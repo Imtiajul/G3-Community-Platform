@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 30 11% 98%; /* #FAFAF9 */
+    --foreground: 20 14% 10%; /* #1C1917 */
+
+    --card: 0 0% 100%; /* #FFFFFF */
+    --card-foreground: 20 14% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 14% 10%;
+
+    --primary: 174 77% 26%; /* #0F766E Deep Teal */
+    --primary-hover: 175 69% 21%; /* #115E59 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 5% 96%; /* #F3F4F6 */
+    --secondary-foreground: 20 14% 10%;
+
+    --muted: 60 5% 98%; /* #F9FAFB */
+    --muted-foreground: 25 5% 45%; /* #78716C */
+
+    --accent: 168 85% 90%; /* #CCFBF1 Soft Teal */
+    --accent-foreground: 174 77% 26%;
+
+    --destructive: 0 84% 50%; /* #DC2626 */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 20 6% 90%; /* #E7E5E4 */
+    --input: 20 6% 90%;
+    --ring: 174 77% 26%;
+
+    --radius: 0.75rem; /* 12px */
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  body {
+    @apply bg-background text-foreground min-h-screen flex flex-col font-bangla;
+    font-size: 16px;
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Custom focus outline for 100% accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+  }
+}
+
+/* Material Symbols support for Stitch faithful rendering */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Editorial reading typography */
+.prose-bangla {
+  font-family: var(--font-noto-sans-bengali), sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.85;
+  color: #1c1917;
+}
+
+.prose-bangla p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.prose-bangla h1,
+.prose-bangla h2,
+.prose-bangla h3 {
+  font-weight: 700;
+  color: #0c0a09;
+  letter-spacing: -0.01em;
+}
