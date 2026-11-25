@@ -97,22 +97,57 @@ export default async function SessionDetailPage({ params }: Props) {
     // If backend is not currently running, provide fallback mock for Stitch preview
   }
 
-  // Fallback session data if backend is offline during local test
-  const session = sessionData || {
-    id: "sample-1",
-    slug: params.slug,
-    title: "ব্যবসায় সততা, প্রতিশ্রুতি এবং গ্রাহকের বিশ্বাস অর্জনের মূলনীতি",
-    session_number: 12,
-    batch: { number: 24 },
-    date: "2024-05-15",
-    reading_time_minutes: 8,
-    author_name: "ইকবাল বাহার জাহিদ",
-    author_role: "প্রতিষ্ঠাতা ও প্রধান মেন্টর",
-    likes_count: 128,
-    is_liked: false,
-    is_bookmarked: false,
-    login_required: false,
-    content: `## ১. বিশ্বাসের ভিত্তি তৈরি: ব্যবসায় দীর্ঘমেয়াদী সফলতার প্রথম ধাপ
+  // Normalize live DRF session data or fallback
+  const session = sessionData
+    ? {
+        id: String(sessionData.id || sessionData.slug),
+        slug: sessionData.slug || params.slug,
+        title: sessionData.title,
+        session_number: sessionData.session_number || 1,
+        batch_number: sessionData.batch_number ?? sessionData.batch?.number ?? 1,
+        batch: sessionData.batch || { number: sessionData.batch_number || 1 },
+        date: sessionData.date || sessionData.published_at || "2024-05-15",
+        reading_time_minutes: sessionData.reading_time_minutes || 8,
+        author_name: sessionData.author_name || "ইকবাল বাহার জাহিদ",
+        author_role: sessionData.author_role || "প্রতিষ্ঠাতা ও প্রধান মেন্টর",
+        cover_image_url: sessionData.cover_image_url,
+        content: sessionData.content || "",
+        likes_count: sessionData.like_count ?? sessionData.likes_count ?? 0,
+        is_liked: sessionData.is_liked_by_me ?? sessionData.is_liked ?? false,
+        is_bookmarked: sessionData.is_bookmarked_by_me ?? sessionData.is_bookmarked ?? false,
+        login_required: Boolean(sessionData.login_required),
+        tags: (sessionData.tags || []).map((t: any, idx: number) => ({
+          id: String(t.id || t.slug || idx),
+          name: typeof t === "string" ? t : t.name || t.slug || "উদ্যোক্তা",
+          slug: typeof t === "string" ? t : t.slug || t.name || "entrepreneurship",
+        })),
+        comments: (sessionData.comments || []).map((c: any) => ({
+          id: String(c.id),
+          author_name:
+            c.author_name ||
+            c.author_first_name ||
+            (c.author ? `${c.author.first_name || ""} ${c.author.last_name || ""}`.trim() : "সদস্য"),
+          author_batch: c.author_batch || c.author?.batch || 1,
+          content: c.content,
+          created_at: c.created_at,
+        })),
+      }
+    : {
+        id: "sample-1",
+        slug: params.slug,
+        title: "ব্যবসায় সততা, প্রতিশ্রুতি এবং গ্রাহকের বিশ্বাস অর্জনের মূলনীতি",
+        session_number: 12,
+        batch_number: 24,
+        batch: { number: 24 },
+        date: "2024-05-15",
+        reading_time_minutes: 8,
+        author_name: "ইকবাল বাহার জাহিদ",
+        author_role: "প্রতিষ্ঠাতা ও প্রধান মেন্টর",
+        likes_count: 128,
+        is_liked: false,
+        is_bookmarked: false,
+        login_required: false,
+        content: `## ১. বিশ্বাসের ভিত্তি তৈরি: ব্যবসায় দীর্ঘমেয়াদী সফলতার প্রথম ধাপ
 
 ব্যবসায়ের মূল ভিত্তি কেবল তাৎক্ষণিক মুনাফা অর্জন নয়, বরং গ্রাহক ও সমাজের আস্থা অর্জন। যখন একজন উদ্যোক্তা প্রতিটি পদক্ষেপে সততার পরিচয় দেন এবং নিজের পণ্য বা সেবার মান সম্পর্কে স্বচ্ছ থাকেন, তখন গ্রাহক কেবল ক্রেতা থাকেন না, তিনি প্রতিষ্ঠানের আজীবন সমর্থক ও ব্র্যান্ড অ্যাম্বাসেডরে পরিণত হন।
 
@@ -126,28 +161,30 @@ export default async function SessionDetailPage({ params }: Props) {
 4. **নৈতিক মূল্যবোধ বজায় রাখা**: ব্যবসায়িক সংকটকালীন যেকোনো মুহূর্তেও পণ্যের গুণগত মানের সাথে আপস না করা।
 
 প্রতিটি ব্যাচের শিক্ষার্থীদের মনে রাখতে হবে, সততা হলো একটি নিয়মিত চর্চা। প্রতিদিনের ছোট ছোট সিদ্ধান্তই আপনার ব্যক্তিগত ও প্রাতিষ্ঠানিক ভাবমূর্তি গড়ে তোলে।`,
-    tags: [
-      { id: "1", name: "উদ্যোক্তা", slug: "entrepreneurship" },
-      { id: "2", name: "নৈতিকতা", slug: "ethics" },
-      { id: "3", name: "গ্রাহকসেবা", slug: "customer-service" },
-    ],
-    comments: [
-      {
-        id: "c1",
-        author_name: "ফারহানা ইয়াসমিন",
-        author_batch: 24,
-        content: "অসাধারণ দিকনির্দেশনা স্যার! আমাদের বুটিক উদ্যোগে ডেলিভারি টাইমিং ঠিক রাখতে এই ফর্মুলা মেনে চলছি। শুরুতে কিছুটা চ্যালেঞ্জ হলেও এখন কাস্টমাররা আগের চেয়ে অনেক বেশি খুশি।",
-        created_at: "2024-05-15T14:30:00Z",
-      },
-      {
-        id: "c2",
-        author_name: "রাকিবুল হাসান",
-        author_batch: 23,
-        content: "ভুল স্বীকার করে দ্রুত সমাধান দেওয়ার বিষয়টি সত্যিই গ্রাহকের আস্থা কয়েকগুণ বাড়িয়ে দেয়। আমরা গত সপ্তাহে কুরিয়ার বিভ্রাটে নিজের খরচে নতুন পণ্য পাঠিয়েছিলাম, ক্লায়েন্ট ভীষণ মুগ্ধ হয়েছেন।",
-        created_at: "2024-05-15T12:00:00Z",
-      },
-    ],
-  };
+        tags: [
+          { id: "1", name: "উদ্যোক্তা", slug: "entrepreneurship" },
+          { id: "2", name: "নৈতিকতা", slug: "ethics" },
+          { id: "3", name: "গ্রাহকসেবা", slug: "customer-service" },
+        ],
+        comments: [
+          {
+            id: "c1",
+            author_name: "ফারহানা ইয়াসমিন",
+            author_batch: 24,
+            content:
+              "অসাধারণ দিকনির্দেশনা স্যার! আমাদের বুটিক উদ্যোগে ডেলিভারি টাইমিং ঠিক রাখতে এই ফর্মুলা মেনে চলছি। শুরুতে কিছুটা চ্যালেঞ্জ হলেও এখন কাস্টমাররা আগের চেয়ে অনেক বেশি খুশি।",
+            created_at: "2024-05-15T14:30:00Z",
+          },
+          {
+            id: "c2",
+            author_name: "রাকিবুল হাসান",
+            author_batch: 23,
+            content:
+              "ভুল স্বীকার করে দ্রুত সমাধান দেওয়ার বিষয়টি সত্যিই গ্রাহকের আস্থা কয়েকগুণ বাড়িয়ে দেয়। আমরা গত সপ্তাহে কুরিয়ার বিভ্রাটে নিজের খরচে নতুন পণ্য পাঠিয়েছিলাম, ক্লায়েন্ট ভীষণ মুগ্ধ হয়েছেন।",
+            created_at: "2024-05-15T12:00:00Z",
+          },
+        ],
+      };
 
   return (
     <>
@@ -161,44 +198,44 @@ export default async function SessionDetailPage({ params }: Props) {
         />
       )}
 
-      <main className="w-full pt-16 bg-background flex-grow font-bangla min-h-screen">
+      <main className="w-full pt-16 bg-white flex-grow font-bangla min-h-screen">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           {/* Breadcrumb */}
-          <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground mb-6">
-            <Link href="/" className="hover:text-foreground transition-colors flex items-center gap-1">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-6">
+            <Link href="/" className="hover:text-black transition-colors flex items-center gap-1">
               <Home className="w-3.5 h-3.5" />
               <span>হোম</span>
             </Link>
-            <ChevronRight className="w-3.5 h-3.5 text-border" />
-            <Link href="/sessions" className="hover:text-foreground transition-colors">
+            <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+            <Link href="/sessions" className="hover:text-black transition-colors">
               সেশনসমূহ
             </Link>
-            <ChevronRight className="w-3.5 h-3.5 text-border" />
-            <span className="text-foreground font-semibold truncate max-w-[200px] sm:max-w-none">
+            <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+            <span className="text-black font-semibold truncate max-w-[200px] sm:max-w-none">
               ব্যাচ {banglaNumber(session.batch?.number || 24)} • সেশন {banglaNumber(session.session_number)}
             </span>
           </nav>
 
           {/* Members-only Post Locked State for Anonymous Visitor */}
           {session.login_required ? (
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-8 sm:p-10 text-center shadow-sm">
-              <div className="w-12 h-12 rounded-full bg-amber-100 border border-amber-300 flex items-center justify-center mx-auto mb-4 text-amber-900">
+            <div className="bg-white border border-[#e5e7eb] rounded-2xl p-8 sm:p-10 text-center">
+              <div className="w-12 h-12 rounded-xl bg-[#E2E361]/20 border border-[#E2E361] flex items-center justify-center mx-auto mb-4 text-black">
                 <Lock className="w-6 h-6" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-3">{session.title}</h1>
-              <p className="text-gray-700 max-w-lg mx-auto mb-6 leading-relaxed">
+              <h1 className="text-2xl font-extrabold text-black mb-3 font-headline">{session.title}</h1>
+              <p className="text-gray-600 max-w-lg mx-auto mb-6 leading-relaxed font-normal">
                 এই সেশনটি শুধুমাত্র নিবন্ধিত ও ভেরিফাইড সদস্যদের জন্য উন্মুক্ত। বিস্তারিত পড়ার জন্য অনুগ্রহ করে আপনার অ্যাকাউন্টে লগইন করুন।
               </p>
               <div className="flex items-center justify-center gap-3">
                 <Link
                   href={`/login?next=/sessions/${session.slug}`}
-                  className="px-6 py-2.5 bg-foreground text-background font-bold text-sm rounded-lg hover:bg-neutral-800 transition-colors shadow-sm"
+                  className="px-6 py-2.5 bg-mint border border-mint text-black font-bold text-sm rounded-lg hover:bg-[#72eab0] transition-all"
                 >
                   লগইন করুন
                 </Link>
                 <Link
                   href={`/register?next=/sessions/${session.slug}`}
-                  className="px-6 py-2.5 bg-background border border-border text-foreground font-semibold text-sm rounded-lg hover:bg-secondary transition-colors"
+                  className="px-6 py-2.5 bg-white border border-[#e5e7eb] text-black font-semibold text-sm rounded-lg hover:bg-gray-50 transition-all"
                 >
                   নতুন অ্যাকাউন্ট খুলুন
                 </Link>
@@ -208,43 +245,43 @@ export default async function SessionDetailPage({ params }: Props) {
             <article className="flex flex-col">
               {/* Badges / Chips */}
               <div className="flex flex-wrap items-center gap-2 mb-4">
-                <span className="px-3 py-1 rounded-full bg-secondary text-foreground text-xs font-semibold border border-border">
+                <span className="px-3 py-1 rounded-full bg-[#E2E361]/20 border border-[#E2E361] text-black text-xs font-mono font-bold">
                   ব্যাচ {banglaNumber(session.batch?.number || 24)}
                 </span>
-                <span className="px-3 py-1 rounded-full bg-foreground text-background text-xs font-bold">
+                <span className="px-3 py-1 rounded-full bg-white border border-[#e5e7eb] text-gray-800 text-xs font-mono font-medium">
                   সেশন {banglaNumber(session.session_number)}
                 </span>
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-card border border-border text-xs text-muted-foreground font-medium">
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white border border-[#e5e7eb] text-xs text-gray-600 font-mono">
                   <Calendar className="w-3.5 h-3.5" />
                   {formatDateBn(session.date)}
                 </span>
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200 text-xs font-semibold">
-                  <Clock className="w-3.5 h-3.5 text-teal-700" />
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#63DB9A]/20 border border-[#63DB9A] text-black text-xs font-mono font-bold">
+                  <Clock className="w-3.5 h-3.5" />
                   {banglaNumber(session.reading_time_minutes || 8)} মিনিট পাঠ
                 </span>
               </div>
 
               {/* Title */}
-              <h1 className="text-2xl sm:text-4xl font-extrabold text-foreground tracking-tight leading-snug mb-6">
+              <h1 className="text-2xl sm:text-4xl font-extrabold text-black tracking-tight leading-snug mb-6 font-headline">
                 {session.title}
               </h1>
 
               {/* Author & Verification Row */}
-              <div className="flex items-center justify-between pb-6 mb-8 border-b border-border">
+              <div className="flex items-center justify-between pb-6 mb-8 border-b border-[#e5e7eb]">
                 <div className="flex items-center gap-3.5">
-                  <div className="w-12 h-12 rounded-full bg-secondary border border-border flex items-center justify-center font-bold text-foreground text-base shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-[#63DB9A]/20 border border-[#63DB9A] flex items-center justify-center font-bold text-black text-base shrink-0 font-mono">
                     ইব
                   </div>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-base font-bold text-foreground">
+                      <span className="text-base font-bold text-black">
                         {session.author_name || "ইকবাল বাহার জাহিদ"}
                       </span>
-                      <span className="w-4 h-4 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">
+                      <span className="w-4 h-4 rounded-full bg-[#63DB9A]/30 border border-[#63DB9A] text-black flex items-center justify-center text-[10px] font-bold">
                         <Check className="w-3 h-3 stroke-[3]" />
                       </span>
                     </div>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-gray-500 font-normal">
                       {session.author_role || "প্রতিষ্ঠাতা ও প্রধান মেন্টর"}
                     </span>
                   </div>
@@ -253,7 +290,7 @@ export default async function SessionDetailPage({ params }: Props) {
 
               {/* Cover Image if present */}
               {session.cover_image_url && (
-                <div className="relative w-full h-72 sm:h-96 rounded-2xl overflow-hidden mb-8 border border-border shadow-sm">
+                <div className="relative w-full h-72 sm:h-96 rounded-xl overflow-hidden mb-8 border border-[#e5e7eb]">
                   <Image
                     src={session.cover_image_url}
                     alt={session.title}
@@ -271,12 +308,12 @@ export default async function SessionDetailPage({ params }: Props) {
 
               {/* Tags */}
               {session.tags && session.tags.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2 mb-8 pt-4 border-t border-border">
-                  <span className="text-xs text-muted-foreground font-medium">ট্যাগ:</span>
+                <div className="flex flex-wrap items-center gap-2 mb-8 pt-4 border-t border-[#e5e7eb]">
+                  <span className="text-xs text-gray-500 font-mono font-bold uppercase">ট্যাগ // TAGS:</span>
                   {session.tags.map((tag: any) => (
                     <span
                       key={tag.id || tag.slug}
-                      className="px-3 py-1 rounded-full bg-secondary text-foreground text-xs font-medium border border-border"
+                      className="px-3 py-1 rounded-full bg-[#f9fafb] border border-[#e5e7eb] text-gray-700 text-xs font-mono font-medium hover:border-gray-400"
                     >
                       #{tag.name}
                     </span>

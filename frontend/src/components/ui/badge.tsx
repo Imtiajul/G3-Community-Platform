@@ -3,23 +3,24 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 select-none",
   {
     variants: {
       variant: {
         default:
-          "border-transparent bg-foreground text-background hover:bg-foreground/80",
+          "border-[#63DB9A] bg-[#63DB9A]/20 text-black",
         secondary:
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "border-[#E2E361] bg-[#E2E361]/25 text-black",
         destructive:
-          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "text-foreground border-border",
+          "border-[#FF49D2] bg-[#FF49D2]/15 text-[#9c0a76]",
+        outline:
+          "border-[#e5e7eb] bg-white text-black",
         success:
-          "border-transparent bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300",
+          "border-[#63DB9A] bg-[#63DB9A]/20 text-[#0f5132] font-semibold",
         warning:
-          "border-transparent bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
+          "border-[#E2E361] bg-[#E2E361]/30 text-black font-semibold",
         teal:
-          "border-transparent bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300",
+          "border-[#63DB9A] bg-[#63DB9A] text-black font-semibold",
       },
     },
     defaultVariants: {

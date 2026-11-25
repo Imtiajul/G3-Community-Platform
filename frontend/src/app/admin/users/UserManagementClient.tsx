@@ -5,49 +5,44 @@ import { toast } from "sonner";
 import { banglaNumber } from "@/lib/utils";
 import {
   Search,
-  Users,
-  ShieldCheck,
-  UserCheck,
-  UserX,
-  MoreVertical,
-  Check,
-  X,
-  Shield,
-  Trash2,
   FilterX,
+  Trash2,
+  Check,
 } from "lucide-react";
 
-export interface UserRow {
-  id: number;
+export interface UserItem {
+  id: number | string;
   name: string;
   email: string;
   role: "admin" | "moderator" | "member";
   batch: number;
   reg_no: string;
-  verification_status: "verified" | "pending" | "unverified" | "rejected";
+  verification_status: "verified" | "pending" | "unverified";
   joined_date: string;
 }
 
-const INITIAL_USERS: UserRow[] = [
+export type UserRow = UserItem;
+
+const INITIAL_USERS: UserItem[] = [
   {
     id: 1,
     name: "ইকবাল বাহার জাহিদ",
-    email: "mentor@nijerbolargolpo.com",
+    email: "mentor@nijerbolarmotogolpo.com",
     role: "admin",
     batch: 1,
-    reg_no: "FOUNDER-001",
+    reg_no: "ADMIN-001",
     verification_status: "verified",
-    joined_date: "০১ জানু, ২০১৮",
+    joined_date: "০১ জানুয়ারি, ২০১৮",
   },
   {
     id: 2,
-    name: "নাজমুল হাসান",
-    email: "nazmul.mod@example.com",
+    name: "তানজিলা ইসলাম",
+    email: "tanzila.mod@community.bd",
     role: "moderator",
-    batch: 3,
-    reg_no: "REG-03-0102",
+    batch: 22,
+    reg_no: "REG-22-0941",
     verification_status: "verified",
-    joined_date: "১৫ মার্চ, ২০২০",
+    joined_date: "১২ নভেম্বর, ২০২৩",
   },
   {
     id: 3,
@@ -56,7 +51,7 @@ const INITIAL_USERS: UserRow[] = [
     role: "member",
     batch: 24,
     reg_no: "REG-24-9872",
-    verification_status: "verified",
+    verification_status: "pending",
     joined_date: "১৪ মে, ২০২৪",
   },
   {
@@ -66,111 +61,128 @@ const INITIAL_USERS: UserRow[] = [
     role: "member",
     batch: 24,
     reg_no: "REG-24-3419",
-    verification_status: "pending",
-    joined_date: "১৪ মে, ২০২৪",
+    verification_status: "verified",
+    joined_date: "১০ এপ্রিল, ২০২৪",
   },
   {
     id: 5,
-    name: "রাশেদুল করিম",
-    email: "rashed.k@example.com",
-    role: "member",
-    batch: 22,
-    reg_no: "REG-22-5401",
-    verification_status: "verified",
-    joined_date: "১০ জানু, ২০২৩",
-  },
-  {
-    id: 6,
     name: "কাজী কামরুল হাসান",
     email: "kamrul.agr@example.com",
     role: "member",
     batch: 25,
     reg_no: "REG-25-1102",
     verification_status: "unverified",
-    joined_date: "২৫ মে, ২০২৪",
+    joined_date: "০২ মে, ২০২৪",
   },
 ];
 
-export function UserManagementClient() {
-  const [users, setUsers] = useState<UserRow[]>(INITIAL_USERS);
+export function UserManagementClient({
+  initialUsers,
+}: {
+  initialUsers?: UserItem[];
+}) {
+  const [users, setUsers] = useState<UserItem[]>(
+    initialUsers && initialUsers.length > 0 ? initialUsers : INITIAL_USERS
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const handleRoleChange = (userId: number, newRole: "admin" | "moderator" | "member") => {
+  const handleRoleChange = async (userId: number | string, newRole: "admin" | "moderator" | "member") => {
     setUsers((prev) =>
       prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u))
     );
-    toast.success("ব্যবহারকারীর ভূমিকা পরিবর্তন করা হয়েছে");
+    toast.success("সদস্যের ভূমিকা সফলভাবে পরিবর্তন করা হয়েছে");
+
+    try {
+      await fetch(`/api/bff/admin/users/${userId}/role`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify({ role: newRole }),
+      });
+    } catch {
+      // Graceful
+    }
   };
 
-  const handleToggleVerification = (userId: number) => {
+  const handleToggleVerification = async (userId: number | string) => {
+    const user = users.find((u) => u.id === userId);
+    if (!user) return;
+
+    const nextStatus = user.verification_status === "verified" ? "unverified" : "verified";
     setUsers((prev) =>
-      prev.map((u) => {
-        if (u.id === userId) {
-          const nextStatus = u.verification_status === "verified" ? "unverified" : "verified";
-          toast.success(
-            nextStatus === "verified"
-              ? "সদস্য সফলভাবে যাচাই করা হয়েছে"
-              : "সদস্যের যাচাইকরণ প্রত্যাহার করা হয়েছে"
-          );
-          return { ...u, verification_status: nextStatus };
-        }
-        return u;
-      })
+      prev.map((u) => (u.id === userId ? { ...u, verification_status: nextStatus } : u))
     );
+    toast.success(`ভেরিফিকেশন অবস্থা পরিবর্তন করে ${nextStatus === "verified" ? "যাচাইকৃত" : "অযাচাইকৃত"} করা হয়েছে`);
+
+    try {
+      await fetch(`/api/bff/admin/users/${userId}/verify`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify({ verification_status: nextStatus }),
+      });
+    } catch {
+      // Graceful
+    }
   };
 
-  const handleDeleteUser = (userId: number, name: string) => {
-    if (confirm(`আপনি কি নিশ্চিতভাবে ${name}-কে প্ল্যাটফর্ম থেকে অপসারণ করতে চান?`)) {
+  const handleDeleteUser = (userId: number | string, name: string) => {
+    if (confirm(`আপনি কি নিশ্চিতভাবে ${name}-কে অপসারণ করতে চান?`)) {
       setUsers((prev) => prev.filter((u) => u.id !== userId));
-      toast.success("ব্যবহারকারী মুছে ফেলা হয়েছে");
+      toast.error(`${name}-কে প্ল্যাটফর্ম থেকে অপসারণ করা হয়েছে`);
     }
   };
 
   const filteredUsers = users.filter((u) => {
-    const matchesSearch =
-      !searchQuery.trim() ||
-      u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      u.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      u.reg_no.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesRole = roleFilter === "all" || u.role === roleFilter;
-    const matchesStatus = statusFilter === "all" || u.verification_status === statusFilter;
-
-    return matchesSearch && matchesRole && matchesStatus;
+    if (roleFilter !== "all" && u.role !== roleFilter) return false;
+    if (statusFilter !== "all" && u.verification_status !== statusFilter) return false;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      return (
+        u.name.toLowerCase().includes(q) ||
+        u.email.toLowerCase().includes(q) ||
+        u.reg_no.toLowerCase().includes(q)
+      );
+    }
+    return true;
   });
 
   return (
     <div className="flex flex-col gap-6 w-full font-bangla">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-border">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#e5e7eb]">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-black tracking-tight font-headline">
             ব্যবহারকারী ব্যবস্থাপনা
           </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5 font-normal">
             সকল নিবন্ধিত সদস্য, মডারেটর এবং অ্যাডমিনদের তালিকা ও অধিকার পরিচালনা।
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="px-3 py-1.5 rounded-xl bg-card border border-border text-xs font-semibold text-foreground shadow-sm">
+          <span className="px-3 py-1.5 rounded-lg bg-white border border-[#e5e7eb] text-xs font-mono font-semibold text-gray-700">
             মোট সদস্য: {banglaNumber(users.length)} জন
           </span>
         </div>
       </div>
 
       {/* Filter & Search Toolbar */}
-      <div className="bg-card rounded-2xl p-4 border border-border shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+      <div className="bg-white rounded-xl border border-[#e5e7eb] p-4 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
         <div className="relative flex-1">
-          <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="নাম, ইমেইল বা রেজিস্ট্রেশন আইডি দিয়ে অনুসন্ধান..."
-            className="w-full h-10 pl-10 pr-4 rounded-xl bg-secondary/40 border border-border text-xs text-foreground placeholder:text-muted-foreground outline-none focus:bg-card focus:ring-1 focus:ring-primary transition-all"
+            className="w-full h-10 pl-10 pr-4 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] text-xs text-black placeholder:text-gray-400 outline-none focus:border-mint focus:ring-1 focus:ring-mint focus:bg-white transition-all font-normal"
           />
         </div>
 
@@ -179,7 +191,7 @@ export function UserManagementClient() {
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
             aria-label="ভূমিকা নির্বাচন"
-            className="h-10 px-3 rounded-xl bg-card border border-border text-xs text-foreground outline-none cursor-pointer"
+            className="h-10 px-3 rounded-lg bg-white border border-[#e5e7eb] text-xs font-mono font-semibold text-black outline-none cursor-pointer"
           >
             <option value="all">সকল ভূমিকা (All Roles)</option>
             <option value="admin">অ্যাডমিন (Admin)</option>
@@ -191,7 +203,7 @@ export function UserManagementClient() {
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             aria-label="ভেরিফিকেশন অবস্থা"
-            className="h-10 px-3 rounded-xl bg-card border border-border text-xs text-foreground outline-none cursor-pointer"
+            className="h-10 px-3 rounded-lg bg-white border border-[#e5e7eb] text-xs font-mono font-semibold text-black outline-none cursor-pointer"
           >
             <option value="all">সকল ভেরিফিকেশন অবস্থা</option>
             <option value="verified">যাচাইকৃত (Verified)</option>
@@ -206,7 +218,7 @@ export function UserManagementClient() {
               setRoleFilter("all");
               setStatusFilter("all");
             }}
-            className="p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary border border-border transition-colors"
+            className="p-2.5 rounded-lg border border-[#e5e7eb] bg-white hover:bg-gray-50 text-gray-600 hover:text-black transition-all"
             title="ফিল্টার রিসেট করুন"
           >
             <FilterX className="w-4 h-4" />
@@ -215,32 +227,32 @@ export function UserManagementClient() {
       </div>
 
       {/* Users Data Table */}
-      <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
+      <div className="bg-white rounded-xl border border-[#e5e7eb] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-secondary/40 text-muted-foreground text-xs font-semibold border-b border-border select-none">
-                <th className="py-3.5 px-4 font-semibold">সদস্য</th>
-                <th className="py-3.5 px-3 font-semibold text-center whitespace-nowrap">ভূমিকা (Role)</th>
-                <th className="py-3.5 px-3 font-semibold text-center whitespace-nowrap">ব্যাচ ও আইডি</th>
-                <th className="py-3.5 px-4 font-semibold text-center whitespace-nowrap">যাচাইকরণ অবস্থা</th>
-                <th className="py-3.5 px-4 font-semibold whitespace-nowrap">যোগদানের তারিখ</th>
-                <th className="py-3.5 pl-3 pr-5 font-semibold text-right whitespace-nowrap">অ্যাকশন</th>
+              <tr className="bg-[#f9fafb] text-gray-700 text-xs font-mono font-semibold uppercase tracking-wider border-b border-[#e5e7eb] select-none">
+                <th className="py-3.5 px-4">সদস্য</th>
+                <th className="py-3.5 px-3 text-center whitespace-nowrap">ভূমিকা (Role)</th>
+                <th className="py-3.5 px-3 text-center whitespace-nowrap">ব্যাচ ও আইডি</th>
+                <th className="py-3.5 px-4 text-center whitespace-nowrap">যাচাইকরণ অবস্থা</th>
+                <th className="py-3.5 px-4 whitespace-nowrap">যোগদানের তারিখ</th>
+                <th className="py-3.5 pl-3 pr-5 text-right whitespace-nowrap">অ্যাকশন</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border text-xs">
+            <tbody className="divide-y divide-[#e5e7eb] text-xs">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-secondary/20 transition-colors">
+                <tr key={user.id} className="hover:bg-gray-50 transition-colors">
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-teal-600 text-white font-bold flex items-center justify-center text-xs shrink-0">
+                      <div className="w-9 h-9 rounded-full bg-[#63DB9A]/20 text-black font-headline font-bold flex items-center justify-center text-xs shrink-0 border border-[#63DB9A]">
                         {user.name[0]}
                       </div>
                       <div className="flex flex-col min-w-0">
-                        <span className="font-bold text-foreground text-sm truncate">
+                        <span className="font-bold text-black text-sm truncate">
                           {user.name}
                         </span>
-                        <span className="text-muted-foreground text-xs truncate">
+                        <span className="text-gray-500 font-mono text-xs truncate">
                           {user.email}
                         </span>
                       </div>
@@ -257,12 +269,12 @@ export function UserManagementClient() {
                         )
                       }
                       aria-label={`${user.name}-এর ভূমিকা নির্বাচন`}
-                      className={`px-2.5 py-1 rounded-full text-xs font-semibold border outline-none cursor-pointer ${
+                      className={`px-3 py-1 rounded-full text-xs font-mono font-bold border outline-none cursor-pointer ${
                         user.role === "admin"
-                          ? "bg-rose-50 text-rose-800 border-rose-200"
+                          ? "bg-[#FF49D2]/15 text-black border-[#FF49D2]"
                           : user.role === "moderator"
-                          ? "bg-indigo-50 text-indigo-800 border-indigo-200"
-                          : "bg-secondary text-foreground border-border"
+                          ? "bg-[#E2E361]/20 text-black border-[#E2E361]"
+                          : "bg-white text-gray-700 border-[#e5e7eb]"
                       }`}
                     >
                       <option value="admin">অ্যাডমিন</option>
@@ -273,10 +285,10 @@ export function UserManagementClient() {
 
                   <td className="py-4 px-3 text-center whitespace-nowrap">
                     <div className="flex flex-col items-center">
-                      <span className="font-semibold text-foreground">
+                      <span className="font-bold text-black">
                         ব্যাচ {banglaNumber(user.batch)}
                       </span>
-                      <span className="text-muted-foreground font-mono text-[11px]">
+                      <span className="text-gray-500 font-mono text-[11px] font-semibold">
                         {user.reg_no}
                       </span>
                     </div>
@@ -286,17 +298,17 @@ export function UserManagementClient() {
                     <button
                       type="button"
                       onClick={() => handleToggleVerification(user.id)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold border transition-all ${
                         user.verification_status === "verified"
-                          ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                          ? "bg-[#63DB9A]/20 text-black border-[#63DB9A]"
                           : user.verification_status === "pending"
-                          ? "bg-amber-50 text-amber-800 border-amber-200"
-                          : "bg-secondary text-muted-foreground border-border"
+                          ? "bg-[#E2E361]/20 text-black border-[#E2E361]"
+                          : "bg-white text-gray-500 border-[#e5e7eb]"
                       }`}
                       title="ক্লিক করে স্ট্যাটাস পরিবর্তন করুন"
                     >
                       {user.verification_status === "verified" && (
-                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        <Check className="w-3.5 h-3.5 text-black stroke-[2.5]" />
                       )}
                       <span>
                         {user.verification_status === "verified"
@@ -308,7 +320,7 @@ export function UserManagementClient() {
                     </button>
                   </td>
 
-                  <td className="py-4 px-4 whitespace-nowrap text-muted-foreground">
+                  <td className="py-4 px-4 whitespace-nowrap text-gray-600 font-mono text-xs">
                     {user.joined_date}
                   </td>
 
@@ -317,7 +329,7 @@ export function UserManagementClient() {
                       <button
                         type="button"
                         onClick={() => handleDeleteUser(user.id, user.name)}
-                        className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                        className="w-8 h-8 rounded-lg border border-[#e5e7eb] bg-white hover:bg-[#FF49D2]/15 text-gray-500 hover:text-black flex items-center justify-center transition-all"
                         title="সদস্য অপসারণ"
                       >
                         <Trash2 className="w-4 h-4" />

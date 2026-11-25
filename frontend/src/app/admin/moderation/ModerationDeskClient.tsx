@@ -12,13 +12,11 @@ import {
   Check,
   UserX,
   Search,
-  MessageSquare,
   Clock,
-  ArrowRight,
 } from "lucide-react";
 
 export interface ReportedComment {
-  id: number;
+  id: number | string;
   comment_text: string;
   author_name: string;
   author_batch: number;
@@ -72,21 +70,52 @@ const INITIAL_REPORTED_COMMENTS: ReportedComment[] = [
   },
 ];
 
-export function ModerationDeskClient() {
-  const [reports, setReports] = useState<ReportedComment[]>(INITIAL_REPORTED_COMMENTS);
+export function ModerationDeskClient({
+  initialReports,
+}: {
+  initialReports?: ReportedComment[];
+}) {
+  const [reports, setReports] = useState<ReportedComment[]>(
+    initialReports && initialReports.length > 0 ? initialReports : INITIAL_REPORTED_COMMENTS
+  );
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleApprove = (id: number) => {
+  const handleApprove = async (id: number | string) => {
     setReports((prev) => prev.filter((r) => r.id !== id));
     toast.success("মন্তব্যটি পর্যালোচনা শেষে অনুমোদন করা হয়েছে এবং রিপোর্ট খারিজ হয়েছে");
+
+    try {
+      await fetch(`/api/bff/admin/moderation/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify({ action: "dismiss" }),
+      });
+    } catch {
+      // Graceful
+    }
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number | string) => {
     setReports((prev) => prev.filter((r) => r.id !== id));
     toast.error("মন্তব্যটি অপসারণ করা হয়েছে");
+
+    try {
+      await fetch(`/api/bff/admin/moderation/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      });
+    } catch {
+      // Graceful
+    }
   };
 
-  const handleSoftBan = (id: number, author: string) => {
+  const handleSoftBan = (id: number | string, author: string) => {
     setReports((prev) => prev.filter((r) => r.id !== id));
     toast.warning(`${author}-কে সাময়িকভাবে মিউট করা হয়েছে`);
   };
@@ -102,32 +131,32 @@ export function ModerationDeskClient() {
   return (
     <div className="flex flex-col gap-6 w-full font-bangla">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-border">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#e5e7eb]">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-semibold text-rose-600 uppercase tracking-widest flex items-center gap-1">
-              <ShieldAlert className="w-4 h-4" />
+            <span className="text-xs font-mono font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+              <ShieldAlert className="w-4 h-4 text-gray-500" />
               <span>নিরাপত্তা ও মডারেশন</span>
             </span>
           </div>
-          <div className="flex items-baseline gap-3">
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
+          <div className="flex items-baseline gap-3 flex-wrap">
+            <h1 className="text-2xl sm:text-3xl font-black text-black tracking-tight font-headline">
               রিপোর্টকৃত মন্তব্য মডারেশন
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-200">
+            <span className="px-3 py-0.5 rounded-full text-xs font-mono font-bold bg-[#FF49D2]/15 text-black border border-[#FF49D2]">
               {banglaNumber(reports.length)}টি পর্যালোচনা বাকি
             </span>
           </div>
         </div>
 
         <div className="relative w-full md:w-72">
-          <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="মন্তব্য বা অভিযোগ খুঁজুন..."
-            className="w-full h-10 pl-10 pr-4 bg-card border border-border rounded-xl text-xs placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-primary shadow-sm"
+            className="w-full h-10 pl-10 pr-4 bg-[#f9fafb] border border-[#e5e7eb] rounded-lg text-xs placeholder:text-gray-400 outline-none focus:border-mint focus:ring-1 focus:ring-mint focus:bg-white transition-all font-normal"
           />
         </div>
       </div>
@@ -138,19 +167,19 @@ export function ModerationDeskClient() {
           {filtered.map((report) => (
             <article
               key={report.id}
-              className="bg-card border border-border rounded-xl p-5 sm:p-6 flex flex-col gap-4 shadow-sm hover:border-foreground/30 transition-all"
+              className="bg-white border border-[#e5e7eb] rounded-xl p-5 sm:p-6 flex flex-col gap-4 hover:border-gray-300 transition-all"
             >
               {/* Top Warning Meta */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-rose-50/70 border border-rose-200/80 rounded-lg text-xs">
-                <div className="flex items-center gap-2 text-rose-900 font-semibold">
-                  <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-[#E2E361]/20 border border-[#E2E361] rounded-lg text-xs">
+                <div className="flex items-center gap-2 text-black font-semibold font-mono">
+                  <AlertTriangle className="w-4 h-4 text-black shrink-0" />
                   <span>অভিযোগের ধরন: {report.report_reason}</span>
                 </div>
-                <div className="flex items-center gap-3 text-rose-800">
-                  <span className="font-bold bg-rose-200/80 px-2 py-0.5 rounded">
+                <div className="flex items-center gap-3 text-black">
+                  <span className="font-mono font-bold bg-white text-black px-2.5 py-0.5 rounded-full border border-[#e5e7eb] text-[11px]">
                     {banglaNumber(report.report_count)}টি রিপোর্ট
                   </span>
-                  <span className="text-[11px] text-muted-foreground">
+                  <span className="text-[11px] text-gray-600 font-mono font-medium">
                     প্রতিবেদক: {report.reported_by}
                   </span>
                 </div>
@@ -159,31 +188,31 @@ export function ModerationDeskClient() {
               {/* Author & Context info */}
               <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-foreground text-sm">
+                  <span className="font-bold text-black text-sm font-headline">
                     {report.author_name}
                   </span>
-                  <span className="px-2 py-0.5 rounded-full bg-secondary border border-border font-medium text-muted-foreground">
+                  <span className="px-2.5 py-0.5 rounded-full bg-[#63DB9A]/20 text-black border border-[#63DB9A] font-mono font-bold text-xs">
                     ব্যাচ {banglaNumber(report.author_batch)}
                   </span>
                 </div>
-                <span className="text-muted-foreground flex items-center gap-1 font-mono">
+                <span className="text-gray-500 flex items-center gap-1 font-mono text-xs">
                   <Clock className="w-3.5 h-3.5" />
                   {report.created_at}
                 </span>
               </div>
 
               {/* Comment Content */}
-              <div className="p-4 rounded-xl bg-secondary/30 border border-border text-foreground text-sm leading-relaxed font-bangla">
+              <div className="p-4 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] text-gray-800 text-sm leading-relaxed font-bangla font-normal">
                 &ldquo;{report.comment_text}&rdquo;
               </div>
 
               {/* Context Session Link & Actions */}
-              <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-border/60 text-xs">
-                <div className="flex items-center gap-1.5 text-muted-foreground truncate">
-                  <span>সেশন:</span>
+              <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-[#e5e7eb] text-xs">
+                <div className="flex items-center gap-1.5 text-gray-500 truncate">
+                  <span className="font-mono font-bold text-black">সেশন:</span>
                   <Link
                     href={`/sessions/${report.session_slug}`}
-                    className="font-semibold text-primary hover:underline truncate"
+                    className="font-semibold text-black hover:underline underline-offset-2 truncate"
                   >
                     {report.session_title}
                   </Link>
@@ -193,25 +222,25 @@ export function ModerationDeskClient() {
                   <button
                     type="button"
                     onClick={() => handleSoftBan(report.id, report.author_name)}
-                    className="px-3 py-1.5 rounded-lg border border-border hover:bg-secondary text-muted-foreground hover:text-foreground font-semibold flex items-center gap-1 transition-colors"
+                    className="px-3 py-1.5 rounded-lg border border-[#e5e7eb] bg-white hover:bg-gray-50 text-gray-700 font-mono font-bold text-xs uppercase flex items-center gap-1.5 transition-all"
                   >
                     <UserX className="w-3.5 h-3.5" />
-                    <span>মিউট করুন</span>
+                    <span>মিউট</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => handleDelete(report.id)}
-                    className="px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 font-semibold flex items-center gap-1 transition-colors"
+                    className="px-3 py-1.5 rounded-lg border border-[#FF49D2] bg-[#FF49D2]/15 hover:bg-[#FF49D2]/25 text-black font-mono font-bold text-xs uppercase flex items-center gap-1.5 transition-all"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
-                    <span>মুছে ফেলুন</span>
+                    <span>মুছুন</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => handleApprove(report.id)}
-                    className="px-4 py-1.5 rounded-lg bg-foreground text-background hover:opacity-90 font-semibold flex items-center gap-1 transition-colors shadow-sm"
+                    className="px-4 py-1.5 rounded-lg border border-mint bg-mint hover:bg-[#72eab0] text-black font-mono font-bold text-xs uppercase flex items-center gap-1.5 transition-all"
                   >
-                    <Check className="w-3.5 h-3.5" />
+                    <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                     <span>অনুমোদন ও রিপোর্ট খারিজ</span>
                   </button>
                 </div>
@@ -220,14 +249,14 @@ export function ModerationDeskClient() {
           ))}
         </div>
       ) : (
-        <div className="bg-card rounded-2xl p-12 border border-border flex flex-col items-center text-center shadow-sm">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 bg-emerald-100 text-emerald-800 border border-emerald-200">
-            <CheckCircle2 className="w-8 h-8 text-emerald-600" />
+        <div className="bg-white rounded-xl border border-[#e5e7eb] p-12 flex flex-col items-center text-center">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 bg-[#63DB9A]/20 text-black border border-[#63DB9A]">
+            <CheckCircle2 className="w-8 h-8 text-black" />
           </div>
-          <h3 className="text-lg font-bold text-foreground mb-1">
+          <h3 className="text-lg font-bold text-black mb-1 font-headline">
             কোনো অমীমাংসিত রিপোর্ট নেই
           </h3>
-          <p className="text-xs sm:text-sm text-muted-foreground max-w-sm leading-relaxed">
+          <p className="text-xs sm:text-sm text-gray-500 max-w-sm leading-relaxed font-normal">
             সকল রিপোর্টকৃত মন্তব্য পর্যালোচনা করা হয়েছে। প্ল্যাটফর্মের পরিবেশ সম্পূর্ণ পরিষ্কার ও সুশৃঙ্খল।
           </p>
         </div>

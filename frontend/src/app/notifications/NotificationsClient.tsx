@@ -17,8 +17,8 @@ import {
 } from "lucide-react";
 
 export interface NotificationItem {
-  id: number;
-  type: "announcement" | "verification" | "session" | "comment";
+  id: number | string;
+  type: "announcement" | "verification" | "session" | "comment" | string;
   title: string;
   description: string;
   created_at: string;
@@ -65,24 +65,56 @@ const INITIAL_NOTIFICATIONS: NotificationItem[] = [
   },
 ];
 
-export function NotificationsClient() {
-  const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
+export function NotificationsClient({
+  initialNotifications,
+}: {
+  initialNotifications?: NotificationItem[];
+}) {
+  const [notifications, setNotifications] = useState<NotificationItem[]>(
+    initialNotifications && initialNotifications.length > 0
+      ? initialNotifications
+      : INITIAL_NOTIFICATIONS
+  );
   const [filter, setFilter] = useState<"all" | "unread" | "announcement">("all");
 
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
-  const handleMarkAsRead = (id: number) => {
+  const handleMarkAsRead = async (id: number | string) => {
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
     );
+
+    try {
+      await fetch(`/api/bff/notifications/${id}/read`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      });
+    } catch {
+      // Graceful
+    }
   };
 
-  const handleMarkAllRead = () => {
+  const handleMarkAllRead = async () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
     toast.success("সকল নোটিফিকেশন পঠিত হিসেবে চিহ্নিত করা হয়েছে");
+
+    try {
+      await fetch("/api/bff/notifications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      });
+    } catch {
+      // Graceful
+    }
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: number | string) => {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
     toast.success("নোটিফিকেশন মুছে ফেলা হয়েছে");
   };
@@ -96,32 +128,34 @@ export function NotificationsClient() {
   const getIcon = (type: NotificationItem["type"]) => {
     switch (type) {
       case "announcement":
-        return <Megaphone className="w-5 h-5 text-indigo-600" />;
+        return <Megaphone className="w-5 h-5 text-black" />;
       case "verification":
-        return <CheckCircle2 className="w-5 h-5 text-emerald-600" />;
+        return <CheckCircle2 className="w-5 h-5 text-black" />;
       case "session":
-        return <BookOpen className="w-5 h-5 text-teal-600" />;
+        return <BookOpen className="w-5 h-5 text-black" />;
       case "comment":
-        return <MessageSquare className="w-5 h-5 text-amber-600" />;
+        return <MessageSquare className="w-5 h-5 text-black" />;
+      default:
+        return <Bell className="w-5 h-5 text-black" />;
     }
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <div className="flex flex-col gap-6 w-full font-bangla">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-[#e5e7eb]">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+            <span className="text-xs font-mono font-bold uppercase tracking-widest text-gray-500">
               আপডেট ও বার্তা
             </span>
           </div>
-          <div className="flex items-baseline gap-3">
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
+          <div className="flex items-baseline gap-3 flex-wrap">
+            <h1 className="text-2xl sm:text-3xl font-black text-black tracking-tight font-headline">
               বিজ্ঞপ্তি
             </h1>
             {unreadCount > 0 && (
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-200">
+              <span className="px-3 py-0.5 rounded-full text-xs font-mono font-bold bg-[#FF49D2]/15 text-black border border-[#FF49D2]">
                 {banglaNumber(unreadCount)}টি নতুন
               </span>
             )}
@@ -132,23 +166,23 @@ export function NotificationsClient() {
           <button
             type="button"
             onClick={handleMarkAllRead}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary transition-colors self-start sm:self-auto shadow-sm"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-mint bg-mint text-xs font-mono font-bold text-black uppercase tracking-wider hover:bg-[#72eab0] transition-all self-start sm:self-auto"
           >
-            <Check className="w-3.5 h-3.5 text-primary" />
+            <Check className="w-4 h-4 text-black stroke-[2.5]" />
             <span>সব পঠিত চিহ্নিত করুন</span>
           </button>
         )}
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-border pb-2">
+      <div className="flex items-center gap-2 border-b border-[#e5e7eb] pb-3">
         <button
           type="button"
           onClick={() => setFilter("all")}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+          className={`px-3.5 py-1.5 rounded-lg border text-xs font-mono font-bold transition-all ${
             filter === "all"
-              ? "bg-foreground text-background"
-              : "text-muted-foreground hover:text-foreground"
+              ? "bg-mint text-black border-mint"
+              : "border-[#e5e7eb] text-gray-600 hover:text-black hover:bg-gray-50"
           }`}
         >
           সব ({banglaNumber(notifications.length)})
@@ -156,10 +190,10 @@ export function NotificationsClient() {
         <button
           type="button"
           onClick={() => setFilter("unread")}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+          className={`px-3.5 py-1.5 rounded-lg border text-xs font-mono font-bold transition-all ${
             filter === "unread"
-              ? "bg-foreground text-background"
-              : "text-muted-foreground hover:text-foreground"
+              ? "bg-mint text-black border-mint"
+              : "border-[#e5e7eb] text-gray-600 hover:text-black hover:bg-gray-50"
           }`}
         >
           অপঠিত ({banglaNumber(unreadCount)})
@@ -167,10 +201,10 @@ export function NotificationsClient() {
         <button
           type="button"
           onClick={() => setFilter("announcement")}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+          className={`px-3.5 py-1.5 rounded-lg border text-xs font-mono font-bold transition-all ${
             filter === "announcement"
-              ? "bg-foreground text-background"
-              : "text-muted-foreground hover:text-foreground"
+              ? "bg-mint text-black border-mint"
+              : "border-[#e5e7eb] text-gray-600 hover:text-black hover:bg-gray-50"
           }`}
         >
           ঘোষণা
@@ -184,21 +218,21 @@ export function NotificationsClient() {
             <div
               key={item.id}
               onClick={() => handleMarkAsRead(item.id)}
-              className={`p-4 sm:p-5 rounded-xl border transition-all flex items-start gap-4 shadow-sm cursor-pointer ${
+              className={`p-4 sm:p-5 rounded-xl border transition-all flex items-start gap-4 cursor-pointer hover:border-gray-300 ${
                 item.is_read
-                  ? "bg-card border-border hover:border-foreground/20"
-                  : "bg-teal-50/20 border-teal-200/80 hover:border-teal-300"
+                  ? "bg-white border-[#e5e7eb]"
+                  : "bg-white border-l-4 border-l-mint border-t border-r border-b border-[#e5e7eb]"
               }`}
             >
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border ${
                   item.type === "announcement"
-                    ? "bg-indigo-50 border-indigo-200"
+                    ? "bg-[#E2E361]/20 border-[#E2E361]"
                     : item.type === "verification"
-                    ? "bg-emerald-50 border-emerald-200"
+                    ? "bg-[#63DB9A]/20 border-[#63DB9A]"
                     : item.type === "session"
-                    ? "bg-teal-50 border-teal-200"
-                    : "bg-amber-50 border-amber-200"
+                    ? "bg-[#f9fafb] border-[#e5e7eb]"
+                    : "bg-[#FF49D2]/15 border-[#FF49D2]"
                 }`}
               >
                 {getIcon(item.type)}
@@ -206,16 +240,12 @@ export function NotificationsClient() {
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
-                  <h3
-                    className={`text-sm sm:text-base font-bold text-foreground leading-snug ${
-                      !item.is_read ? "text-primary" : ""
-                    }`}
-                  >
+                  <h3 className="text-sm sm:text-base font-bold text-black font-headline leading-snug">
                     {item.title}
                   </h3>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <span className="text-[11px] text-muted-foreground flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-xs text-gray-500 font-mono font-medium flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5" />
                       {item.created_at}
                     </span>
                     <button
@@ -224,7 +254,7 @@ export function NotificationsClient() {
                         e.stopPropagation();
                         handleDelete(item.id);
                       }}
-                      className="p-1 text-muted-foreground hover:text-destructive rounded transition-colors ml-1"
+                      className="w-7 h-7 rounded-lg border border-[#e5e7eb] bg-white hover:bg-gray-100 text-gray-500 hover:text-black flex items-center justify-center transition-colors ml-1"
                       title="মুছুন"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -232,7 +262,7 @@ export function NotificationsClient() {
                   </div>
                 </div>
 
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
+                <p className="text-xs sm:text-sm text-gray-600 mt-1.5 leading-relaxed font-normal">
                   {item.description}
                 </p>
 
@@ -240,7 +270,7 @@ export function NotificationsClient() {
                   <div className="mt-3">
                     <Link
                       href={item.link}
-                      className="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1"
+                      className="text-xs font-bold font-mono text-black hover:underline inline-flex items-center gap-1 uppercase"
                     >
                       <span>বিস্তারিত দেখুন</span>
                       <span>&rarr;</span>
@@ -252,12 +282,12 @@ export function NotificationsClient() {
           ))}
         </div>
       ) : (
-        <div className="bg-card rounded-2xl p-12 border border-border flex flex-col items-center text-center shadow-sm">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 bg-secondary text-muted-foreground border border-border">
-            <Bell className="w-8 h-8" />
+        <div className="bg-white rounded-xl border border-[#e5e7eb] p-12 flex flex-col items-center text-center">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 bg-[#63DB9A]/20 text-black border border-[#63DB9A]">
+            <Bell className="w-8 h-8 text-black" />
           </div>
-          <h3 className="text-lg font-bold text-foreground mb-1">কোনো বিজ্ঞপ্তি নেই</h3>
-          <p className="text-xs sm:text-sm text-muted-foreground max-w-sm leading-relaxed">
+          <h3 className="text-lg font-bold text-black mb-1 font-headline">কোনো বিজ্ঞপ্তি নেই</h3>
+          <p className="text-xs sm:text-sm text-gray-500 max-w-sm leading-relaxed font-normal">
             আপনার কাছে এই মুহূর্তে কোনো নতুন নোটিফিকেশন বা বার্তা নেই। নতুন সেশন বা ঘোষণা এলে এখানে দেখতে পাবেন।
           </p>
         </div>

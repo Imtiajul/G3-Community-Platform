@@ -22,6 +22,7 @@ const config: Config = {
     extend: {
       colors: {
         border: "hsl(var(--border))",
+        "border-subtle": "hsl(var(--border-subtle))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
@@ -55,6 +56,30 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        mint: {
+          DEFAULT: "#63DB9A",
+          hover: "#52C887",
+          light: "#CCFBF1",
+          foreground: "#000000",
+        },
+        lime: {
+          DEFAULT: "#E2E361",
+          hover: "#CFD048",
+          light: "#F7F8C4",
+          foreground: "#000000",
+        },
+        neon: {
+          DEFAULT: "#FF49D2",
+          hover: "#E63EBD",
+          light: "#FFD4F4",
+          foreground: "#000000",
+        },
+        dark: {
+          DEFAULT: "#0E0E0E",
+          pure: "#000000",
+          surface: "#1C1917",
+          border: "#0E0E0E",
+        },
         teal: {
           50: "#F0FDFA",
           100: "#CCFBF1",
@@ -83,13 +108,25 @@ const config: Config = {
         },
       },
       borderRadius: {
+        DEFAULT: "0.25rem",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        full: "9999px",
+      },
+      boxShadow: {
+        "neo-sm": "2px 2px 0px #0E0E0E",
+        neo: "3px 3px 0px #0E0E0E",
+        "neo-lg": "5px 5px 0px #0E0E0E",
+        "neo-xl": "8px 8px 0px #0E0E0E",
+        "neo-mint": "3px 3px 0px #63DB9A",
+        "neo-lime": "3px 3px 0px #E2E361",
+        "neo-neon": "4px 4px 0px #FF49D2",
       },
       fontFamily: {
+        headline: ["var(--font-space-grotesk)", "var(--font-noto-sans-bengali)", "sans-serif"],
         bangla: ["var(--font-noto-sans-bengali)", "sans-serif"],
-        sans: ["var(--font-inter)", "var(--font-noto-sans-bengali)", "sans-serif"],
+        sans: ["var(--font-space-grotesk)", "var(--font-inter)", "var(--font-noto-sans-bengali)", "sans-serif"],
         mono: ["var(--font-jetbrains-mono)", "monospace"],
       },
       lineHeight: {

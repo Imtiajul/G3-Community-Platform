@@ -56,18 +56,18 @@ export function AdminSidebar() {
   const user = useUser();
 
   return (
-    <aside className="fixed left-0 top-0 h-full w-72 bg-card border-r border-border z-50 flex flex-col justify-between py-6 px-4 font-bangla select-none">
+    <aside className="fixed left-0 top-0 h-full w-72 bg-white border-r border-[#e5e7eb] z-50 flex flex-col justify-between py-6 px-4 font-bangla select-none">
       <div className="flex flex-col gap-6">
         {/* Brand header */}
         <div className="px-3 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-teal-600 flex items-center justify-center shrink-0 text-white shadow-sm">
-            <Layers className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-lg bg-mint border border-mint flex items-center justify-center shrink-0 text-black">
+            <Layers className="w-5 h-5 text-black" />
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-base font-bold text-foreground tracking-tight truncate leading-tight">
+            <span className="text-base font-bold font-headline text-black tracking-tight truncate leading-tight">
               নিজের বলার মতো
             </span>
-            <span className="text-xs text-muted-foreground truncate font-medium">
+            <span className="text-xs text-gray-500 truncate font-semibold font-mono">
               একটি গল্প • অ্যাডমিন
             </span>
           </div>
@@ -85,22 +85,22 @@ export function AdminSidebar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                className={`flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all ${
                   isActive
-                    ? "bg-foreground text-background shadow-sm"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    ? "bg-mint text-black border border-mint"
+                    : "text-gray-700 hover:text-black hover:bg-gray-50"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Icon className="w-4 h-4 shrink-0" />
+                  <Icon className="w-4 h-4 shrink-0 text-black" />
                   <span>{item.name}</span>
                 </div>
                 {item.badge && (
                   <span
-                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
                       isActive
-                        ? "bg-teal-400 text-teal-950"
-                        : "bg-rose-100 text-rose-800 border border-rose-200"
+                        ? "bg-black text-white border-black"
+                        : "bg-[#FF49D2]/15 text-black border-[#FF49D2]"
                     }`}
                   >
                     {item.badge}
@@ -113,33 +113,33 @@ export function AdminSidebar() {
       </div>
 
       {/* Footer controls */}
-      <div className="flex flex-col gap-3 pt-4 border-t border-border/60">
+      <div className="flex flex-col gap-3 pt-4 border-t border-[#e5e7eb]">
         <Link
           href="/feed"
-          className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+          className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg border border-transparent hover:border-[#e5e7eb] text-xs font-semibold text-gray-700 hover:text-black hover:bg-gray-50 transition-all"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4 text-black" />
           <span>মূল প্ল্যাটফর্মে ফিরুন</span>
         </Link>
 
         {/* Admin profile snippet */}
-        <div className="p-3 rounded-xl bg-secondary/60 border border-border flex items-center justify-between">
+        <div className="p-3 rounded-xl bg-white border border-[#e5e7eb] flex items-center justify-between">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center shrink-0 font-bold text-xs">
+            <div className="w-8 h-8 rounded-full bg-[#63DB9A]/20 border border-[#63DB9A] text-black flex items-center justify-center shrink-0 font-bold text-xs">
               {user?.first_name ? user.first_name[0] : "অ্যা"}
             </div>
             <div className="flex flex-col min-w-0">
-              <span className="text-xs font-bold text-foreground truncate">
+              <span className="text-xs font-bold text-black truncate">
                 {user?.first_name || "ইকবাল বাহার জাহিদ"}
               </span>
-              <span className="text-[11px] text-muted-foreground truncate">
+              <span className="text-[11px] text-gray-500 font-mono truncate">
                 {user?.role === "admin" ? "প্রধান অ্যাডমিন" : "মডারেটর"}
               </span>
             </div>
           </div>
           <button
             type="button"
-            className="text-muted-foreground hover:text-foreground p-1 transition-colors"
+            className="text-gray-400 hover:text-black p-1 rounded-lg hover:bg-gray-100 transition-colors"
             aria-label="অ্যাডমিন মেনু"
           >
             <MoreVertical className="w-4 h-4" />

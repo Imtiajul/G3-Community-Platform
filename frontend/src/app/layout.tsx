@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans_Bengali, Inter } from "next/font/google";
+import { Noto_Sans_Bengali, Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { UserProvider } from "@/lib/auth/context";
@@ -8,16 +8,25 @@ import { Toaster } from "sonner";
 
 const notoSansBengali = Noto_Sans_Bengali({
   subsets: ["bengali"],
-  weight: ["400", "500", "600", "700"],
   variable: "--font-noto-sans-bengali",
   display: "swap",
-  preload: true,
 });
 
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
   display: "swap",
 });
 
@@ -55,7 +64,10 @@ export default async function RootLayout({
   const user = await getCurrentUser();
 
   return (
-    <html lang="bn" className={`${notoSansBengali.variable} ${inter.variable}`}>
+    <html
+      lang="bn"
+      className={`${notoSansBengali.variable} ${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
+    >
       <head>
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link

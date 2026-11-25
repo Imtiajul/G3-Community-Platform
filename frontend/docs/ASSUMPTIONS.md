@@ -18,26 +18,35 @@ This document records architectural, design token, dependency, and backend contr
 
 ---
 
-## 2. Design System Tokens (Extracted from Google Stitch MCP)
+## 2. Design System Tokens: Neo-Editorial Electric (Active)
 
-From project `12247759999368583774` ("Bangla Learning Community Design System"):
-- **Theme**: Light, calm, text-first, editorial minimal reading atmosphere.
-- **Surfaces**:
-  - Background: `#FFFFFF` / `#FAFAF9`
-  - Surface: `#FFFFFF`
-  - Muted Surface / Container: `#F9FAFB`
-  - High Container / Hover: `#F3F4F6`
-  - Border: `#E5E7EB` / `#E7E5E4`
-- **Text & Brand**:
-  - Foreground / Headings: `#000000` / `#1C1917`
-  - Muted Text / Captions: `#4B5563` / `#78716C`
-  - Primary Accent: Deep Charcoal / Black `#000000` with subtle Deep Teal `#0F766E` brand accents as specified in Stitch palette.
-  - Success: `#16A34A` (Verified, Published)
-  - Warning / Pending: `#CA8A04` / `#D97706` (Under review)
-  - Destructive: `#DC2626` (Rejected, Error)
-- **Geometry & Spacing**:
-  - Radius: `12px` (`rounded-xl`), default `8px` (`rounded-lg`).
-  - Font Size: Bangla body reading `17px` with `line-height: 1.75` (28–30px).
+Extracted from Google Stitch MCP project `12247759999368583774` ("Bangla Learning Community Design System"), Asset `3c51c879e8784564b9e2402b65ac5e0f`:
+- **Theme**: Neo-Editorial Electric (Neo-brutalist structure meets modern high-contrast editorial typography and vibrant accents).
+- **Surfaces & Borders**:
+  - Background (Canvas): Pure White `#FFFFFF`
+  - Pitch Black Text / Structural Borders: `#000000` / `#0E0E0E` (`border-2 border-dark`)
+  - Elevated Surface Level 1: Pure White `#FFFFFF` with `border-2 border-dark` and flat offset hard shadow `3px 3px 0px #0E0E0E` (`shadow-neo`)
+  - Surface Level 2 / Subtle Fill: Neutral Tint `#F5F5F4` / `#FAFAF9`
+- **Color Accents & Semantic States**:
+  - **Mint Green (`#63DB9A`)**: Primary Call-to-Action buttons, active elements, verified status chips, highlighted badges.
+  - **Electric Lime (`#E2E361`)**: Secondary accents, tags, pending/in-review notices, key batch pills.
+  - **Neon Magenta (`#FF49D2`)**: Notifications, destructive warnings, rejected statuses, urgent alerts.
+  - **Pitch Black (`#0E0E0E`)**: Solid crisp typography, high-contrast structural borders, and hard drop-shadows.
+- **Typography & Font Pairings**:
+  - `Space Grotesk`: Bold headlines, hero titles, statistics, numbers, section headers (`font-space-grotesk`).
+  - `Noto Sans Bengali`: Bengali editorial body copy, session content, Bengali longform (`font-bangla`).
+  - `JetBrains Mono`: Monospace metadata, batch pills, registration IDs, timestamps, table column headers (`font-mono`).
+  - `Inter`: Complementary English subtext and UI labels.
+- **Elevation & Hard Shadows**:
+  - Card & Container: `3px 3px 0px #0E0E0E` (`shadow-neo`)
+  - Buttons & Small Badges: `2px 2px 0px #0E0E0E` (`shadow-neo-sm`)
+  - Modals & Hero Containers: `6px 6px 0px #0E0E0E` (`shadow-neo-lg`)
+  - Colored Accent Shadows: `3px 3px 0px #63DB9A` (`shadow-neo-mint`), `3px 3px 0px #E2E361` (`shadow-neo-lime`), `3px 3px 0px #FF49D2` (`shadow-neo-neon`)
+- **Shapes & Radii**:
+  - Sharp brutalist 4px (`rounded` / `0.25rem`) for cards, buttons, containers, textareas, inputs.
+  - Full pill (`rounded-full`) reserved for status badges, tags, and avatars.
+- **Interaction Feedback**:
+  - Buttons and interactive items translate 1px down and right on hover (`hover:translate-x-[1px] hover:translate-y-[1px]`) and 2px on active click (`active:translate-x-[2px] active:translate-y-[2px]`), giving tactile physical button feedback.
 
 ---
 

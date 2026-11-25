@@ -77,10 +77,10 @@ export default function LoginPage() {
       <header className="w-full pt-6 pb-4">
         <div className="max-w-md mx-auto text-center">
           <Link href="/" className="inline-flex flex-col items-center gap-1.5 group">
-            <div className="w-10 h-10 rounded-full bg-secondary border border-border flex items-center justify-center text-foreground group-hover:scale-105 transition-transform shadow-sm">
+            <div className="w-10 h-10 rounded-lg bg-mint border border-mint flex items-center justify-center text-dark group-hover:scale-105 transition-transform shadow-sm">
               <span className="material-symbols-outlined text-[20px]">auto_stories</span>
             </div>
-            <span className="text-base font-bold tracking-tight text-foreground">
+            <span className="text-base font-bold tracking-tight text-foreground font-space-grotesk">
               নিজের বলার মতো একটা গল্প
             </span>
           </Link>
@@ -88,9 +88,9 @@ export default function LoginPage() {
       </header>
 
       {/* Main Card */}
-      <main className="w-full max-w-md mx-auto bg-card border border-border rounded-xl p-6 sm:p-8 shadow-sm">
+      <main className="w-full max-w-md mx-auto bg-[#eff9f2] border border-[#e5e7eb] rounded-xl p-6 sm:p-8 shadow-sm">
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          <h1 className="text-2xl font-extrabold tracking-tight text-foreground font-space-grotesk">
             আপনার অ্যাকাউন্টে প্রবেশ করুন
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -100,15 +100,15 @@ export default function LoginPage() {
 
         {/* Error Alert Box matching Stitch design */}
         {errorMessage && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-900 rounded-lg p-3 flex items-start justify-between gap-2 transition-all">
+          <div className="mb-6 bg-neon/10 border border-neon text-dark rounded-lg p-3 flex items-start justify-between gap-2 shadow-sm transition-all">
             <div className="flex items-start gap-2">
-              <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
-              <p className="text-xs sm:text-sm font-medium leading-snug">{errorMessage}</p>
+              <AlertCircle className="w-5 h-5 text-dark shrink-0 mt-0.5" />
+              <p className="text-xs sm:text-sm font-semibold leading-snug">{errorMessage}</p>
             </div>
             <button
               type="button"
               onClick={() => setErrorMessage(null)}
-              className="text-red-700 hover:text-red-900 p-0.5"
+              className="text-dark hover:text-black p-0.5"
               aria-label="বার্তা বন্ধ করুন"
             >
               <X className="w-4 h-4" />
@@ -118,8 +118,8 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-foreground mb-1.5" htmlFor="email">
-              ইমেইল ঠিকানা
+            <label className="block text-[11px] font-semibold text-foreground mb-1.5 font-mono uppercase tracking-wider" htmlFor="email">
+              ইমেইল ঠিকানা // EMAIL
             </label>
             <div className="relative">
               <Input
@@ -137,18 +137,18 @@ export default function LoginPage() {
               )}
             </div>
             {errors.email && (
-              <p className="text-xs text-red-600 mt-1">{errors.email.message}</p>
+              <p className="text-xs text-red-600 mt-1 font-semibold">{errors.email.message}</p>
             )}
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="text-xs font-semibold text-foreground" htmlFor="password">
-                পাসওয়ার্ড
+              <label className="text-[11px] font-semibold text-foreground font-mono uppercase tracking-wider" htmlFor="password">
+                পাসওয়ার্ড // PASSWORD
               </label>
               <Link
                 href="/password-reset"
-                className="text-xs text-foreground font-medium hover:underline transition-colors"
+                className="text-xs text-foreground font-semibold hover:underline transition-colors"
               >
                 পাসওয়ার্ড ভুলে গেছেন?
               </Link>
@@ -172,14 +172,14 @@ export default function LoginPage() {
               </button>
             </div>
             {errors.password && (
-              <p className="text-xs text-red-600 mt-1">{errors.password.message}</p>
+              <p className="text-xs text-red-600 mt-1 font-semibold">{errors.password.message}</p>
             )}
           </div>
 
           <Button
             type="submit"
             disabled={loading}
-            className="w-full h-11 font-bold shadow-sm flex items-center justify-center gap-2 mt-2"
+            className="w-full h-11 font-semibold rounded-lg flex items-center justify-center gap-2 mt-2"
           >
             <span>{loading ? "লগইন হচ্ছে..." : "লগইন"}</span>
             <ArrowRight className="w-4 h-4" />
@@ -188,15 +188,15 @@ export default function LoginPage() {
 
         {/* Divider */}
         <div className="relative my-6 flex items-center justify-center">
-          <div className="w-full h-[1px] bg-border" />
-          <span className="absolute px-3 bg-card text-xs text-muted-foreground">অথবা</span>
+          <div className="w-full h-[1px] bg-[#e5e7eb]" />
+          <span className="absolute px-3 bg-white text-xs font-mono font-medium text-neutral-400 uppercase">অথবা // OR</span>
         </div>
 
         {/* Google OAuth Button */}
         <button
           type="button"
           onClick={() => toast.info("Google সাইন-ইন শীঘ্রই সক্রিয় হবে।")}
-          className="w-full h-11 bg-card hover:bg-secondary border border-border text-foreground font-semibold text-xs sm:text-sm rounded-lg flex items-center justify-center gap-3 transition-colors shadow-sm"
+          className="w-full h-11 bg-white hover:bg-neutral-50 border border-[#e5e7eb] text-black font-semibold text-xs sm:text-sm rounded-lg flex items-center justify-center gap-3 transition-colors shadow-sm"
         >
           <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
             <path
@@ -224,7 +224,7 @@ export default function LoginPage() {
             নতুন সদস্য?{" "}
             <Link
               href={`/register?next=${encodeURIComponent(nextUrl)}`}
-              className="text-foreground font-bold hover:underline"
+              className="text-foreground font-semibold hover:underline"
             >
               একটি নতুন অ্যাকাউন্ট তৈরি করুন
             </Link>
@@ -233,13 +233,13 @@ export default function LoginPage() {
       </main>
 
       {/* Trust Micro-Banner */}
-      <div className="max-w-md w-full mx-auto my-4 px-4 py-2 bg-card border border-border rounded-xl flex items-center justify-between text-xs text-muted-foreground shadow-sm">
-        <div className="flex items-center gap-1.5">
-          <ShieldCheck className="w-4 h-4 text-primary" />
+      <div className="max-w-md w-full mx-auto my-4 px-4 py-2.5 bg-white border border-[#e5e7eb] rounded-xl flex items-center justify-between text-xs text-neutral-600 shadow-sm font-mono">
+        <div className="flex items-center gap-1.5 font-semibold">
+          <ShieldCheck className="w-4 h-4 text-dark" />
           <span>নিরাপদ ও এনক্রিপ্টেড সংযোগ</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+          <span className="w-2 h-2 rounded-full bg-mint border border-mint" />
           <span>ব্যাচ ২৪ নিবন্ধিত</span>
         </div>
       </div>

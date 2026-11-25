@@ -4,40 +4,49 @@
 
 @layer base {
   :root {
-    --background: 30 11% 98%; /* #FAFAF9 */
-    --foreground: 20 14% 10%; /* #1C1917 */
+    --background: 0 0% 100%; /* Pure White #FFFFFF */
+    --foreground: 0 0% 0%; /* Black #000000 */
 
-    --card: 0 0% 100%; /* #FFFFFF */
-    --card-foreground: 20 14% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 20 14% 10%;
+    --popover-foreground: 0 0% 0%;
 
-    --primary: 174 77% 26%; /* #0F766E Deep Teal */
-    --primary-hover: 175 69% 21%; /* #115E59 */
-    --primary-foreground: 0 0% 100%;
+    /* Primary: Electric Mint #63DB9A */
+    --primary: 147 62% 62%;
+    --primary-hover: 147 65% 55%;
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 240 5% 96%; /* #F3F4F6 */
-    --secondary-foreground: 20 14% 10%;
+    /* Secondary: Electric Lime #E2E361 */
+    --secondary: 61 70% 63%;
+    --secondary-foreground: 0 0% 0%;
 
-    --muted: 60 5% 98%; /* #F9FAFB */
-    --muted-foreground: 25 5% 45%; /* #78716C */
+    --muted: 220 13% 96%; /* #F3F4F6 */
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 168 85% 90%; /* #CCFBF1 Soft Teal */
-    --accent-foreground: 174 77% 26%;
+    /* Accent: Electric Neon Pink #FF49D2 */
+    --accent: 315 100% 64%;
+    --accent-foreground: 0 0% 0%;
 
-    --destructive: 0 84% 50%; /* #DC2626 */
+    --destructive: 0 84% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 20 6% 90%; /* #E7E5E4 */
-    --input: 20 6% 90%;
-    --ring: 174 77% 26%;
+    --border: 220 13% 91%; /* #E5E7EB */
+    --border-dark: 0 0% 5%; /* #0E0E0E */
+    --input: 220 13% 91%;
+    --ring: 147 62% 62%;
 
-    --radius: 0.75rem; /* 12px */
+    --radius: 0.5rem; /* 8px rounded-lg */
   }
 
   * {
     @apply border-border;
+  }
+
+  ::selection {
+    background-color: #63DB9A;
+    color: #000000;
   }
 
   html {
@@ -52,46 +61,51 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Custom focus outline for 100% accessibility */
+  /* Custom focus outline with Mint accent offset */
   :focus-visible {
     @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
   }
 }
 
-/* Material Symbols support for Stitch faithful rendering */
-.material-symbols-outlined {
-  font-family: 'Material Symbols Outlined', sans-serif;
-  font-weight: normal;
-  font-style: normal;
-  font-size: 24px;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-block;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  -webkit-font-feature-settings: 'liga';
-  -webkit-font-smoothing: antialiased;
-}
+/* Neo-Palette Elevation & Depth Utilities from Stitch */
+@layer utilities {
+  .neo-card {
+    box-shadow: 3px 3px 0px #0E0E0E;
+  }
+  .neo-card-lg {
+    box-shadow: 5px 5px 0px #0E0E0E;
+  }
+  .neo-btn {
+    box-shadow: 2px 2px 0px #0E0E0E;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .neo-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px #0E0E0E;
+  }
+  .neo-nav-active {
+    box-shadow: 2px 2px 0px #0E0E0E;
+  }
 
-/* Editorial reading typography */
-.prose-bangla {
-  font-family: var(--font-noto-sans-bengali), sans-serif;
-  font-size: 1.125rem;
-  line-height: 1.85;
-  color: #1c1917;
-}
+  /* Custom subtle scrollbar */
+  ::-webkit-scrollbar {
+    display: none;
+  }
 
-.prose-bangla p {
-  margin-top: 1.25em;
-  margin-bottom: 1.25em;
-}
-
-.prose-bangla h1,
-.prose-bangla h2,
-.prose-bangla h3 {
-  font-weight: 700;
-  color: #0c0a09;
-  letter-spacing: -0.01em;
+  /* Badge styling tokens */
+  .badge-mint {
+    background-color: rgba(99, 219, 154, 0.2);
+    border: 1px solid #63DB9A;
+    color: #000000;
+  }
+  .badge-lime {
+    background-color: rgba(226, 227, 97, 0.2);
+    border: 1px solid #E2E361;
+    color: #000000;
+  }
+  .badge-neon {
+    background-color: rgba(255, 73, 210, 0.15);
+    border: 1px solid #FF49D2;
+    color: #000000;
+  }
 }

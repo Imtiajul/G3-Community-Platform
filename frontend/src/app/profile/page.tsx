@@ -127,26 +127,26 @@ export default function ProfilePage() {
       <main className="w-full pt-16 bg-background flex-grow font-bangla min-h-screen">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex flex-col gap-8">
           {/* Profile Overview Card */}
-          <section className="bg-card border border-border rounded-xl p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <section className="bg-white border border-[#e5e7eb] rounded-xl p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-secondary border border-border flex items-center justify-center font-bold text-xl text-foreground shrink-0 shadow-sm">
+              <div className="w-16 h-16 rounded-full bg-lime border border-lime flex items-center justify-center font-bold font-mono text-xl text-dark shrink-0 shadow-sm">
                 {user?.first_name?.[0] || user?.full_name?.[0] || "স"}
               </div>
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
-                  <h1 className="text-xl sm:text-2xl font-bold text-foreground">
+                  <h1 className="text-xl sm:text-2xl font-extrabold text-foreground font-space-grotesk">
                     {user?.full_name || `${user?.first_name || ""} ${user?.last_name || ""}`.trim() || "সদস্য"}
                   </h1>
                   {user?.verification_status === "verified" && (
-                    <span className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[11px]" title="যাচাইকৃত">
+                    <span className="w-5 h-5 rounded-full bg-mint border border-mint text-dark flex items-center justify-center text-[11px] font-bold" title="যাচাইকৃত">
                       ✓
                     </span>
                   )}
                 </div>
-                <span className="text-xs text-muted-foreground">{user?.email}</span>
+                <span className="text-xs text-muted-foreground font-mono">{user?.email}</span>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary text-foreground border border-border">
-                    {user?.role === "admin" ? "অ্যাডমিন" : user?.role === "moderator" ? "মডারেটর" : "সাধারণ সদস্য"}
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-neutral-100 text-neutral-800 border border-[#e5e7eb]">
+                    {user?.role === "admin" ? "অ্যাডমিন // ADMIN" : user?.role === "moderator" ? "মডারেটর // MOD" : "সাধারণ সদস্য // MEMBER"}
                   </span>
                 </div>
               </div>
@@ -158,7 +158,7 @@ export default function ProfilePage() {
                 size="sm"
                 onClick={handleLogout}
                 disabled={loggingOut}
-                className="gap-1.5 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                className="gap-1.5 text-xs font-semibold text-red-600 hover:text-red-700 hover:bg-neon/10 border border-[#e5e7eb] rounded-lg"
               >
                 <LogOut className="w-4 h-4" />
                 <span>{loggingOut ? "লগআউট হচ্ছে..." : "লগআউট"}</span>
@@ -167,34 +167,34 @@ export default function ProfilePage() {
           </section>
 
           {/* Verification Status & Application Box */}
-          <section className="bg-card border border-border rounded-xl p-6 sm:p-8 shadow-sm">
+          <section className="bg-white border border-[#e5e7eb] rounded-xl p-6 sm:p-8 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-primary" />
-                <h2 className="text-lg font-bold text-foreground">সদস্যপদ যাচাইকরণ (Verification)</h2>
+                <ShieldCheck className="w-5 h-5 text-dark" />
+                <h2 className="text-lg font-extrabold text-foreground font-space-grotesk">সদস্যপদ যাচাইকরণ (Verification)</h2>
               </div>
 
               {/* Status Badge */}
               {user?.verification_status === "verified" && (
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold border border-emerald-200">
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#63DB9A]/20 text-[#0f5132] text-xs font-mono font-semibold border border-[#63DB9A]">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>যাচাইকৃত সদস্য</span>
                 </span>
               )}
               {user?.verification_status === "pending" && (
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-semibold border border-amber-200">
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#E2E361]/25 text-[#4e4f0a] text-xs font-mono font-semibold border border-[#E2E361]">
                   <Clock className="w-3.5 h-3.5 animate-pulse" />
                   <span>পর্যালোচনাধীন</span>
                 </span>
               )}
               {user?.verification_status === "rejected" && (
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-100 text-red-800 text-xs font-semibold border border-red-200">
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#FF49D2]/15 text-[#9c0a76] text-xs font-mono font-semibold border border-[#FF49D2]">
                   <XCircle className="w-3.5 h-3.5" />
                   <span>প্রত্যাখ্যাত</span>
                 </span>
               )}
               {user?.verification_status === "unverified" && (
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary text-muted-foreground text-xs font-semibold border border-border">
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-neutral-100 text-neutral-700 text-xs font-mono font-semibold border border-[#e5e7eb]">
                   <ShieldAlert className="w-3.5 h-3.5" />
                   <span>অযাচাইকৃত</span>
                 </span>
@@ -203,14 +203,14 @@ export default function ProfilePage() {
 
             {/* Rejection notice if rejected */}
             {user?.verification_status === "rejected" && (
-              <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-xs text-red-900 leading-relaxed">
-                <span className="font-bold">বাতিলের কারণ: </span>
+              <div className="mb-6 p-4 rounded-lg bg-neon/10 border border-neon text-xs text-dark leading-relaxed font-semibold">
+                <span>বাতিলের কারণ: </span>
                 প্রদত্ত রেজিস্ট্রেশন নম্বর ও ব্যাচ তালিকার সাথে মেলেনি। অনুগ্রহ করে সঠিক তথ্য দিয়ে পুনরায় আবেদন করুন।
               </div>
             )}
 
             {isFieldsLocked && (
-              <p className="text-xs text-muted-foreground mb-4">
+              <p className="text-xs text-muted-foreground mb-4 font-mono">
                 🔒 আপনার আবেদন পর্যালোচনায় অথবা অনুমোদিত থাকায় ব্যাচ ও রেজিস্ট্রেশন নম্বর পরিবর্তন লক করা আছে।
               </p>
             )}
@@ -218,8 +218,8 @@ export default function ProfilePage() {
             <form onSubmit={handleApplyVerification} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1.5" htmlFor="batch">
-                    আপনার ব্যাচ নম্বর
+                  <label className="block text-[11px] font-bold text-foreground mb-1.5 font-mono uppercase tracking-wider" htmlFor="batch">
+                    আপনার ব্যাচ নম্বর // BATCH NO
                   </label>
                   <Input
                     id="batch"
@@ -233,8 +233,8 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1.5" htmlFor="registrationNo">
-                    রেজিস্ট্রেশন নম্বর
+                  <label className="block text-[11px] font-bold text-foreground mb-1.5 font-mono uppercase tracking-wider" htmlFor="registrationNo">
+                    রেজিস্ট্রেশন নম্বর // REG NO
                   </label>
                   <Input
                     id="registrationNo"
@@ -252,7 +252,7 @@ export default function ProfilePage() {
                   <Button
                     type="submit"
                     disabled={!canApply || applying}
-                    className="font-bold text-xs"
+                    className="font-semibold text-xs rounded-lg"
                   >
                     {applying ? "জমা হচ্ছে..." : "যাচাইকরণের জন্য আবেদন করুন"}
                   </Button>
@@ -262,15 +262,15 @@ export default function ProfilePage() {
           </section>
 
           {/* Password Change Box */}
-          <section className="bg-card border border-border rounded-xl p-6 sm:p-8 shadow-sm">
+          <section className="bg-white border border-[#e5e7eb] rounded-xl p-6 sm:p-8 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
-              <KeyRound className="w-5 h-5 text-primary" />
-              <h2 className="text-lg font-bold text-foreground">পাসওয়ার্ড পরিবর্তন</h2>
+              <KeyRound className="w-5 h-5 text-dark" />
+              <h2 className="text-lg font-extrabold text-foreground font-space-grotesk">পাসওয়ার্ড পরিবর্তন</h2>
             </div>
 
             <form onSubmit={handleChangePassword} className="space-y-4 max-w-md">
               <div>
-                <label className="block text-xs font-semibold text-foreground mb-1.5" htmlFor="oldPassword">
+                <label className="block text-[11px] font-semibold text-foreground mb-1.5 font-mono uppercase tracking-wider" htmlFor="oldPassword">
                   বর্তমান পাসওয়ার্ড
                 </label>
                 <Input
@@ -284,7 +284,7 @@ export default function ProfilePage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-foreground mb-1.5" htmlFor="newPassword">
+                <label className="block text-[11px] font-semibold text-foreground mb-1.5 font-mono uppercase tracking-wider" htmlFor="newPassword">
                   নতুন পাসওয়ার্ড
                 </label>
                 <Input
@@ -298,7 +298,7 @@ export default function ProfilePage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-foreground mb-1.5" htmlFor="confirmNewPassword">
+                <label className="block text-[11px] font-semibold text-foreground mb-1.5 font-mono uppercase tracking-wider" htmlFor="confirmNewPassword">
                   নতুন পাসওয়ার্ড নিশ্চিত করুন
                 </label>
                 <Input
@@ -314,7 +314,7 @@ export default function ProfilePage() {
               <Button
                 type="submit"
                 disabled={Boolean(changingPassword)}
-                className="font-bold text-xs"
+                className="font-semibold text-xs rounded-lg"
               >
                 {changingPassword ? "সংরক্ষণ হচ্ছে..." : "পাসওয়ার্ড হালনাগাদ করুন"}
               </Button>
@@ -322,24 +322,24 @@ export default function ProfilePage() {
           </section>
 
           {/* Notification Preferences */}
-          <section className="bg-card border border-border rounded-xl p-6 sm:p-8 shadow-sm">
+          <section className="bg-white border border-[#e5e7eb] rounded-xl p-6 sm:p-8 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
-              <Bell className="w-5 h-5 text-primary" />
-              <h2 className="text-lg font-bold text-foreground">বিজ্ঞপ্তি পছন্দসমূহ</h2>
+              <Bell className="w-5 h-5 text-dark" />
+              <h2 className="text-lg font-extrabold text-foreground font-space-grotesk">বিজ্ঞপ্তি পছন্দসমূহ</h2>
             </div>
 
             <div className="space-y-4 max-w-lg">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-semibold text-foreground">নতুন সেশন ইমেইল বিজ্ঞপ্তি</h3>
+                  <h3 className="text-sm font-bold text-foreground">নতুন সেশন ইমেইল বিজ্ঞপ্তি</h3>
                   <p className="text-xs text-muted-foreground">প্রতিটি নতুন সেশন প্রকাশিত হলে ইমেইল পান</p>
                 </div>
                 <Switch defaultChecked />
               </div>
 
-              <div className="flex items-center justify-between pt-3 border-t border-border">
+              <div className="flex items-center justify-between pt-3 border-t border-[#e5e7eb]">
                 <div>
-                  <h3 className="text-sm font-semibold text-foreground">মন্তব্য ও প্রতিক্রিয়ার বিজ্ঞপ্তি</h3>
+                  <h3 className="text-sm font-bold text-foreground">মন্তব্য ও প্রতিক্রিয়ার বিজ্ঞপ্তি</h3>
                   <p className="text-xs text-muted-foreground">আপনার মন্তব্যের উত্তর আসলে বিজ্ঞপ্তি পান</p>
                 </div>
                 <Switch defaultChecked />

@@ -100,19 +100,19 @@ export default function RegisterPage() {
       <header className="w-full pt-6 pb-4">
         <div className="max-w-md mx-auto text-center">
           <Link href="/" className="inline-flex flex-col items-center gap-1.5 group">
-            <div className="w-10 h-10 rounded-full bg-secondary border border-border flex items-center justify-center text-foreground group-hover:scale-105 transition-transform shadow-sm">
+            <div className="w-10 h-10 rounded-lg bg-mint border border-mint flex items-center justify-center text-dark group-hover:scale-105 transition-transform shadow-sm">
               <span className="material-symbols-outlined text-[20px]">auto_stories</span>
             </div>
-            <span className="text-base font-bold tracking-tight text-foreground">
+            <span className="text-base font-bold tracking-tight text-foreground font-space-grotesk">
               নিজের বলার মতো একটা গল্প
             </span>
           </Link>
         </div>
       </header>
 
-      <main className="w-full max-w-md mx-auto bg-card border border-border rounded-xl p-6 sm:p-8 shadow-sm">
+      <main className="w-full max-w-md mx-auto bg-white border border-[#e5e7eb] rounded-xl p-6 sm:p-8 shadow-sm">
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          <h1 className="text-2xl font-extrabold tracking-tight text-foreground font-space-grotesk">
             নতুন সদস্য নিবন্ধন
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -121,17 +121,17 @@ export default function RegisterPage() {
         </div>
 
         {errorMessage && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-900 rounded-lg p-3 flex items-start gap-2">
-            <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
-            <p className="text-xs sm:text-sm font-medium leading-snug">{errorMessage}</p>
+          <div className="mb-6 bg-neon/10 border border-neon text-dark rounded-lg p-3 flex items-start gap-2 shadow-sm">
+            <AlertCircle className="w-5 h-5 text-dark shrink-0 mt-0.5" />
+            <p className="text-xs sm:text-sm font-semibold leading-snug">{errorMessage}</p>
           </div>
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-foreground mb-1.5" htmlFor="first_name">
-                প্রথম নাম
+              <label className="block text-[11px] font-bold text-foreground mb-1.5 font-mono uppercase tracking-wider" htmlFor="first_name">
+                প্রথম নাম // FIRST
               </label>
               <Input
                 id="first_name"
@@ -141,13 +141,13 @@ export default function RegisterPage() {
                 required
               />
               {errors.first_name && (
-                <p className="text-[11px] text-red-600 mt-1">{errors.first_name.message}</p>
+                <p className="text-[11px] text-red-600 mt-1 font-semibold">{errors.first_name.message}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-foreground mb-1.5" htmlFor="last_name">
-                শেষ নাম
+              <label className="block text-[11px] font-bold text-foreground mb-1.5 font-mono uppercase tracking-wider" htmlFor="last_name">
+                শেষ নাম // LAST
               </label>
               <Input
                 id="last_name"
@@ -157,14 +157,14 @@ export default function RegisterPage() {
                 required
               />
               {errors.last_name && (
-                <p className="text-[11px] text-red-600 mt-1">{errors.last_name.message}</p>
+                <p className="text-[11px] text-red-600 mt-1 font-semibold">{errors.last_name.message}</p>
               )}
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-foreground mb-1.5" htmlFor="email">
-              ইমেইল ঠিকানা
+            <label className="block text-[11px] font-bold text-foreground mb-1.5 font-mono uppercase tracking-wider" htmlFor="email">
+              ইমেইল ঠিকানা // EMAIL
             </label>
             <Input
               id="email"
@@ -175,13 +175,13 @@ export default function RegisterPage() {
               required
             />
             {errors.email && (
-              <p className="text-[11px] text-red-600 mt-1">{errors.email.message}</p>
+              <p className="text-[11px] text-red-600 mt-1 font-semibold">{errors.email.message}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-foreground mb-1.5" htmlFor="password">
-              পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)
+            <label className="block text-[11px] font-bold text-foreground mb-1.5 font-mono uppercase tracking-wider" htmlFor="password">
+              পাসওয়ার্ড // PASSWORD (৮+ অক্ষর)
             </label>
             <Input
               id="password"
@@ -192,13 +192,13 @@ export default function RegisterPage() {
               required
             />
             {errors.password && (
-              <p className="text-[11px] text-red-600 mt-1">{errors.password.message}</p>
+              <p className="text-[11px] text-red-600 mt-1 font-semibold">{errors.password.message}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-foreground mb-1.5" htmlFor="confirm_password">
-              পাসওয়ার্ড নিশ্চিত করুন
+            <label className="block text-[11px] font-bold text-foreground mb-1.5 font-mono uppercase tracking-wider" htmlFor="confirm_password">
+              পাসওয়ার্ড নিশ্চিত করুন // CONFIRM
             </label>
             <Input
               id="confirm_password"
@@ -209,7 +209,7 @@ export default function RegisterPage() {
               required
             />
             {errors.confirm_password && (
-              <p className="text-[11px] text-red-600 mt-1">{errors.confirm_password.message}</p>
+              <p className="text-[11px] text-red-600 mt-1 font-semibold">{errors.confirm_password.message}</p>
             )}
           </div>
 
@@ -222,21 +222,21 @@ export default function RegisterPage() {
             />
             <label
               htmlFor="terms_accepted"
-              className="text-xs text-muted-foreground leading-snug cursor-pointer select-none"
+              className="text-xs text-muted-foreground leading-snug cursor-pointer select-none font-medium"
             >
               আমি প্ল্যাটফর্মের{" "}
-              <span className="text-foreground font-semibold underline">কমিউনিটি নীতিমালা</span> ও{" "}
-              <span className="text-foreground font-semibold underline">আচরণবিধি</span> মেনে চলার অঙ্গীকার করছি।
+              <span className="text-foreground font-bold underline">কমিউনিটি নীতিমালা</span> ও{" "}
+              <span className="text-foreground font-bold underline">আচরণবিধি</span> মেনে চলার অঙ্গীকার করছি।
             </label>
           </div>
           {errors.terms_accepted && (
-            <p className="text-[11px] text-red-600">{errors.terms_accepted.message}</p>
+            <p className="text-[11px] text-red-600 font-semibold">{errors.terms_accepted.message}</p>
           )}
 
           <Button
             type="submit"
             disabled={loading}
-            className="w-full h-11 font-bold shadow-sm flex items-center justify-center gap-2 mt-2"
+            className="w-full h-11 font-semibold rounded-lg flex items-center justify-center gap-2 mt-2"
           >
             <span>{loading ? "নিবন্ধন সম্পন্ন হচ্ছে..." : "অ্যাকাউন্ট তৈরি করুন"}</span>
             <ArrowRight className="w-4 h-4" />
@@ -246,22 +246,22 @@ export default function RegisterPage() {
         <div className="mt-6 text-center">
           <p className="text-xs text-muted-foreground">
             ইতিমধ্যে অ্যাকাউন্ট আছে?{" "}
-            <Link href="/login" className="text-foreground font-bold hover:underline">
+            <Link href="/login" className="text-foreground font-semibold hover:underline">
               লগইন করুন
             </Link>
           </p>
         </div>
       </main>
 
-      <div className="max-w-md w-full mx-auto my-4 px-4 py-2 bg-card border border-border rounded-xl flex items-center justify-between text-xs text-muted-foreground shadow-sm">
-        <div className="flex items-center gap-1.5">
-          <ShieldCheck className="w-4 h-4 text-primary" />
+      <div className="max-w-md w-full mx-auto my-4 px-4 py-2.5 bg-white border border-[#e5e7eb] rounded-xl flex items-center justify-between text-xs text-neutral-600 shadow-sm font-mono">
+        <div className="flex items-center gap-1.5 font-semibold">
+          <ShieldCheck className="w-4 h-4 text-dark" />
           <span>সম্পূর্ণ অবাণিজ্যিক ও বিনামূল্যে</span>
         </div>
-        <span>২৪তম ব্যাচ চলমান</span>
+        <span className="bg-lime px-2 py-0.5 rounded-full border border-lime text-black font-semibold text-[10px]">২৪তম ব্যাচ</span>
       </div>
 
-      <footer className="w-full py-4 text-center text-xs text-muted-foreground">
+      <footer className="w-full py-4 text-center text-xs text-muted-foreground font-mono">
         © ২০২৪–২০২৬ নিজের বলার মতো একটা গল্প ফাউন্ডেশন
       </footer>
     </div>

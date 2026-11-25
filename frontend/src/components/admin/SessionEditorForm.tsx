@@ -112,7 +112,6 @@ export function SessionEditorForm({
   const handleSaveDraft = async () => {
     setIsSubmitting(true);
     try {
-      // Simulate/call BFF session save
       await new Promise((r) => setTimeout(r, 600));
       toast.success("খসড়া সফলভাবে সংরক্ষণ করা হয়েছে");
     } finally {
@@ -142,18 +141,18 @@ export function SessionEditorForm({
   return (
     <div className="flex flex-col gap-6 w-full pb-24 font-bangla">
       {/* Top Breadcrumb & Status Indicator */}
-      <div className="flex items-center justify-between pb-2">
+      <div className="flex items-center justify-between pb-3 border-b border-[#e5e7eb]">
         <div className="flex items-center gap-3">
           <Link
             href="/admin/sessions"
-            className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-mono font-bold text-gray-700 hover:text-black transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 text-black" />
             <span>সেশন তালিকায় ফিরুন</span>
           </Link>
-          <span className="text-muted-foreground/40">/</span>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary text-foreground text-xs font-medium border border-border">
-            <span className="w-2 h-2 rounded-full bg-teal-600" />
+          <span className="text-gray-300">/</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#63DB9A]/20 text-black text-xs font-mono font-bold border border-[#63DB9A]">
+            <span className="w-2 h-2 rounded-full bg-black" />
             <span>
               {isEditMode
                 ? `সেশন সম্পাদনা: সেশন ${banglaNumber(formData.session_number)}`
@@ -163,16 +162,16 @@ export function SessionEditorForm({
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-1.5 text-muted-foreground text-xs">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+          <div className="hidden sm:flex items-center gap-1.5 text-gray-600 font-mono text-xs font-semibold">
+            <CheckCircle2 className="w-4 h-4 text-mint" />
             <span>স্বয়ংক্রিয় ড্রাফট সক্রিয়</span>
           </div>
           <button
             type="button"
             onClick={() => setEditorTab((prev) => (prev === "write" ? "preview" : "write"))}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#e5e7eb] bg-white text-xs font-mono font-semibold text-gray-700 hover:text-black hover:bg-gray-50 transition-all"
           >
-            <Eye className="w-4 h-4" />
+            <Eye className="w-4 h-4 text-gray-500" />
             <span>{editorTab === "write" ? "লাইভ ভিউ" : "এডিটরে ফিরুন"}</span>
           </button>
         </div>
@@ -183,15 +182,15 @@ export function SessionEditorForm({
         {/* LEFT COLUMN: Editor & Content (8 cols) */}
         <div className="col-span-12 xl:col-span-8 flex flex-col gap-6">
           {/* Session Title Card */}
-          <div className="p-6 rounded-xl bg-card border border-border shadow-sm flex flex-col gap-2">
+          <div className="p-6 rounded-xl bg-white border border-[#e5e7eb] flex flex-col gap-2">
             <label
               htmlFor="session-title-input"
-              className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-between"
+              className="text-xs font-mono font-bold text-gray-700 uppercase tracking-wider flex items-center justify-between"
             >
               <span>
-                সেশন শিরোনাম <span className="text-rose-500">*</span>
+                সেশন শিরোনাম <span className="text-red-500">*</span>
               </span>
-              <span className="text-[11px] font-normal text-muted-foreground">
+              <span className="text-[11px] font-normal text-gray-500 font-bangla">
                 বাংলা ইউনিকোড সমর্থিত
               </span>
             </label>
@@ -201,28 +200,28 @@ export function SessionEditorForm({
               value={formData.title}
               onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
               placeholder="সেশনের স্পষ্ট ও অনুপ্রেরণামূলক শিরোনাম লিখুন..."
-              className="w-full bg-transparent text-xl sm:text-2xl font-bold text-foreground placeholder:text-muted-foreground/50 outline-none leading-snug py-1"
+              className="w-full bg-transparent text-xl sm:text-2xl font-bold text-black placeholder:text-gray-300 outline-none leading-snug py-1 font-headline"
             />
-            <div className="flex items-center gap-2 text-muted-foreground text-xs font-mono pt-1">
-              <span>স্থায়ী লিংক:</span>
-              <span className="text-primary truncate">
+            <div className="flex items-center gap-2 text-gray-500 text-xs font-mono pt-1">
+              <span className="font-semibold text-black">স্থায়ী লিংক:</span>
+              <span className="text-gray-700 font-normal truncate">
                 /sessions/batch-{formData.batch}/session-{formData.session_number}
               </span>
             </div>
           </div>
 
           {/* Markdown Workspace */}
-          <div className="rounded-xl bg-card border border-border shadow-sm overflow-hidden flex flex-col">
+          <div className="rounded-xl bg-white border border-[#e5e7eb] overflow-hidden flex flex-col">
             {/* Toolbar */}
-            <div className="bg-secondary/40 px-4 py-2.5 border-b border-border flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center p-1 bg-card border border-border rounded-lg text-xs font-semibold">
+            <div className="bg-[#f9fafb] px-4 py-2.5 border-b border-[#e5e7eb] flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center p-1 bg-white border border-[#e5e7eb] rounded-lg text-xs font-mono font-semibold">
                 <button
                   type="button"
                   onClick={() => setEditorTab("write")}
                   className={`px-3 py-1 rounded-md transition-all ${
                     editorTab === "write"
-                      ? "bg-foreground text-background shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "bg-mint text-black font-bold"
+                      : "text-gray-600 hover:text-black"
                   }`}
                 >
                   লিখুন (Write)
@@ -232,8 +231,8 @@ export function SessionEditorForm({
                   onClick={() => setEditorTab("preview")}
                   className={`px-3 py-1 rounded-md transition-all ${
                     editorTab === "preview"
-                      ? "bg-foreground text-background shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "bg-mint text-black font-bold"
+                      : "text-gray-600 hover:text-black"
                   }`}
                 >
                   প্রিভিউ (Preview)
@@ -242,168 +241,163 @@ export function SessionEditorForm({
 
               {/* Formatting buttons */}
               {editorTab === "write" && (
-                <div className="flex items-center flex-wrap gap-1 text-muted-foreground">
+                <div className="flex items-center flex-wrap gap-1 text-black">
                   <button
                     type="button"
                     onClick={() =>
                       setFormData((p) => ({ ...p, content: p.content + " **বোল্ড টেক্সট** " }))
                     }
-                    className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-secondary hover:text-foreground transition-colors"
+                    className="w-8 h-8 rounded-lg border border-[#e5e7eb] bg-white flex items-center justify-center hover:bg-gray-50 transition-colors"
                     title="বোল্ড"
                   >
-                    <Bold className="w-4 h-4" />
+                    <Bold className="w-4 h-4 text-gray-700" />
                   </button>
                   <button
                     type="button"
                     onClick={() =>
                       setFormData((p) => ({ ...p, content: p.content + " *ইটালিক টেক্সট* " }))
                     }
-                    className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-secondary hover:text-foreground transition-colors"
+                    className="w-8 h-8 rounded-lg border border-[#e5e7eb] bg-white flex items-center justify-center hover:bg-gray-50 transition-colors"
                     title="ইটালিক"
                   >
-                    <Italic className="w-4 h-4" />
+                    <Italic className="w-4 h-4 text-gray-700" />
                   </button>
                   <button
                     type="button"
                     onClick={() =>
                       setFormData((p) => ({ ...p, content: p.content + "\n### উপ-শিরোনাম\n" }))
                     }
-                    className="px-2 h-8 rounded-lg flex items-center justify-center hover:bg-secondary hover:text-foreground text-xs font-bold transition-colors"
-                    title="শিরোনাম"
+                    className="px-2 h-8 rounded-lg border border-[#e5e7eb] bg-white flex items-center justify-center hover:bg-gray-50 text-xs font-mono font-bold transition-colors text-gray-700"
+                    title="হেডিং"
                   >
                     H3
                   </button>
                   <button
                     type="button"
                     onClick={() =>
-                      setFormData((p) => ({ ...p, content: p.content + "\n> উদ্ধৃতি বার্তা\n" }))
+                      setFormData((p) => ({ ...p, content: p.content + "\n> উদ্ধৃতি বাক্য...\n" }))
                     }
-                    className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-secondary hover:text-foreground transition-colors"
+                    className="w-8 h-8 rounded-lg border border-[#e5e7eb] bg-white flex items-center justify-center hover:bg-gray-50 transition-colors"
                     title="উদ্ধৃতি"
                   >
-                    <Quote className="w-4 h-4" />
+                    <Quote className="w-4 h-4 text-gray-700" />
                   </button>
                   <button
                     type="button"
                     onClick={() =>
-                      setFormData((p) => ({ ...p, content: p.content + "\n- তালিকা আইটেম\n" }))
+                      setFormData((p) => ({ ...p, content: p.content + "\n- তালিকা ১\n- তালিকা ২\n" }))
                     }
-                    className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-secondary hover:text-foreground transition-colors"
+                    className="w-8 h-8 rounded-lg border border-[#e5e7eb] bg-white flex items-center justify-center hover:bg-gray-50 transition-colors"
                     title="বুলেট তালিকা"
                   >
-                    <List className="w-4 h-4" />
+                    <List className="w-4 h-4 text-gray-700" />
                   </button>
                   <button
                     type="button"
                     onClick={() =>
-                      setFormData((p) => ({ ...p, content: p.content + "\n১. ক্রমিক আইটেম\n" }))
+                      setFormData((p) => ({ ...p, content: p.content + "\n1. প্রথম ধাপ\n2. দ্বিতীয় ধাপ\n" }))
                     }
-                    className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-secondary hover:text-foreground transition-colors"
-                    title="সংখ্যাযুক্ত তালিকা"
+                    className="w-8 h-8 rounded-lg border border-[#e5e7eb] bg-white flex items-center justify-center hover:bg-gray-50 transition-colors"
+                    title="ক্রমিক তালিকা"
                   >
-                    <ListOrdered className="w-4 h-4" />
+                    <ListOrdered className="w-4 h-4 text-gray-700" />
                   </button>
                   <button
                     type="button"
                     onClick={() =>
-                      setFormData((p) => ({ ...p, content: p.content + "\n---\n" }))
+                      setFormData((p) => ({ ...p, content: p.content + "\n```\nকোড বা উদাহরণ\n```\n" }))
                     }
-                    className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-secondary hover:text-foreground transition-colors"
-                    title="ডিভাইডার দাগ"
+                    className="w-8 h-8 rounded-lg border border-[#e5e7eb] bg-white flex items-center justify-center hover:bg-gray-50 transition-colors"
+                    title="কোড ব্লক"
                   >
-                    <Minus className="w-4 h-4" />
+                    <Code className="w-4 h-4 text-gray-700" />
                   </button>
                 </div>
               )}
             </div>
 
-            {/* Writing / Preview Surface */}
-            <div className="p-6 min-h-[460px] flex flex-col">
-              {editorTab === "write" ? (
-                <textarea
-                  value={formData.content}
-                  onChange={(e) => setFormData((p) => ({ ...p, content: e.target.value }))}
-                  placeholder="আপনার সেশনের মূল বক্তব্য, দিকনির্দেশনা ও গল্পসমূহ এখানে বিস্তারিত আকারে লিখুন..."
-                  className="w-full flex-1 bg-transparent text-base text-foreground placeholder:text-muted-foreground/50 outline-none resize-none leading-relaxed min-h-[420px] font-bangla"
-                />
-              ) : (
-                <div className="prose prose-bangla max-w-none text-foreground leading-relaxed">
-                  <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
-                    {formData.content}
-                  </ReactMarkdown>
-                </div>
-              )}
-            </div>
+            {/* Editor Workspace */}
+            {editorTab === "write" ? (
+              <textarea
+                value={formData.content}
+                onChange={(e) => setFormData((prev) => ({ ...prev, content: e.target.value }))}
+                placeholder="এখানে বিস্তারিত শিক্ষণ সেশন রচনা করুন (মার্কডাউন সমর্থন করে)..."
+                rows={18}
+                className="w-full p-6 bg-white text-black font-bangla text-base leading-relaxed outline-none resize-y min-h-[380px] font-normal"
+              />
+            ) : (
+              <div className="p-6 bg-white min-h-[380px] font-bangla prose prose-neutral max-w-none">
+                <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
+                  {formData.content}
+                </ReactMarkdown>
+              </div>
+            )}
 
-            {/* Bottom Status Bar */}
-            <div className="bg-secondary/30 px-6 py-2.5 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
-              <span className="text-emerald-700 font-medium">✓ খসড়া স্বয়ংক্রিয়ভাবে সংরক্ষিত</span>
-              <div className="flex items-center gap-3 font-mono">
-                <span>
-                  পড়ার সময়: <strong>{banglaNumber(readingTimeMin)} মিনিট</strong>
-                </span>
-                <span>|</span>
-                <span>
-                  শব্দ: <strong>{banglaNumber(wordCount)}</strong>
-                </span>
-                <span>|</span>
-                <span>
-                  অক্ষর: <strong>{banglaNumber(charCount)}</strong>
-                </span>
+            {/* Word & Reading Meta Footer */}
+            <div className="px-4 py-2.5 bg-[#f9fafb] border-t border-[#e5e7eb] flex items-center justify-between text-xs text-gray-500 font-mono">
+              <div className="flex items-center gap-4">
+                <span>শব্দ সংখ্যা: {banglaNumber(wordCount)}</span>
+                <span>অক্ষর: {banglaNumber(charCount)}</span>
+              </div>
+              <div className="flex items-center gap-1.5 font-semibold text-black">
+                <Clock className="w-3.5 h-3.5 text-gray-500" />
+                <span>আনুমানিক পাঠ সময়: {banglaNumber(readingTimeMin)} মিনিট</span>
               </div>
             </div>
           </div>
 
-          {/* Mentor Audio Attachment Card */}
-          <div className="p-6 rounded-xl bg-card border border-border shadow-sm flex flex-col gap-4">
+          {/* SEO Metadata Card */}
+          <div className="p-6 rounded-xl bg-white border border-[#e5e7eb] flex flex-col gap-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center">
-                  <Mic className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-foreground">
-                    মেন্টরের অডিও বা সহায়ক বার্তা (ঐচ্ছিক)
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    সেশনের সাথে যুক্ত করার জন্য অডিও পডকাস্ট বা নির্দেশনামূলক ফাইল
-                  </p>
-                </div>
+              <div>
+                <h2 className="text-base font-bold text-black font-headline">সার্চ ইঞ্জিন অপ্টিমাইজেশন (SEO)</h2>
+                <p className="text-xs text-gray-500 font-normal">
+                  গুগল অনুসন্ধান ও সামাজিক যোগাযোগ মাধ্যমে সেশনটি কীভাবে উপস্থাপিত হবে
+                </p>
               </div>
-              <button
-                type="button"
-                onClick={() => toast.info("অডিও আপলোড কার্যকারিতা সংযুক্ত")}
-                className="px-3 py-1.5 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary flex items-center gap-1.5 transition-colors"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>ফাইল যুক্ত করুন</span>
-              </button>
             </div>
 
-            <div className="p-3.5 rounded-lg bg-secondary/30 border border-border flex items-center justify-between text-xs">
-              <div className="flex items-center gap-3 min-w-0">
-                <span className="font-semibold text-foreground truncate">
-                  session-162-mentor-briefing-iqbal-bahar.mp3
-                </span>
-                <span className="text-muted-foreground shrink-0">১৪.২ MB • দৈর্ঘ্য: ১৮:৪০ মিনিট</span>
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-mono font-bold text-gray-700 uppercase">
+                  মেটা শিরোনাম (SEO Title)
+                </label>
+                <input
+                  type="text"
+                  value={formData.seo_title}
+                  onChange={(e) => setFormData((p) => ({ ...p, seo_title: e.target.value }))}
+                  className="w-full h-10 px-3 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] text-xs text-black outline-none focus:border-mint focus:ring-1 focus:ring-mint focus:bg-white font-normal"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-mono font-bold text-gray-700 uppercase">
+                  মেটা বিবরণ (Meta Description)
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.meta_description}
+                  onChange={(e) => setFormData((p) => ({ ...p, meta_description: e.target.value }))}
+                  className="w-full p-3 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] text-xs text-black outline-none focus:border-mint focus:ring-1 focus:ring-mint focus:bg-white font-normal"
+                />
               </div>
             </div>
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Settings & Publishing Controls (4 cols) */}
+        {/* RIGHT COLUMN: Settings & Metadata (4 cols) */}
         <div className="col-span-12 xl:col-span-4 flex flex-col gap-6">
-          {/* 1. Publication Status Widget */}
-          <div className="p-5 rounded-xl bg-card border border-border shadow-sm flex flex-col gap-3">
-            <span className="text-sm font-bold text-foreground">প্রকাশনা স্ট্যাটাস</span>
-            <div className="grid grid-cols-3 gap-2 p-1 bg-secondary/40 border border-border rounded-lg text-xs font-semibold">
+          {/* Status Capsule Card */}
+          <div className="p-5 rounded-xl bg-white border border-[#e5e7eb] flex flex-col gap-3">
+            <span className="text-xs font-mono font-bold text-gray-700 uppercase">প্রকাশনা অবস্থা (Status)</span>
+            <div className="grid grid-cols-3 gap-2 p-1 bg-[#f9fafb] border border-[#e5e7eb] rounded-lg text-xs font-mono font-bold">
               <button
                 type="button"
                 onClick={() => setFormData((p) => ({ ...p, status: "draft" }))}
-                className={`py-2 rounded-md text-center transition-all ${
+                className={`py-2 rounded-md transition-all ${
                   formData.status === "draft"
-                    ? "bg-foreground text-background shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-mint text-black"
+                    : "text-gray-600 hover:text-black"
                 }`}
               >
                 খসড়া
@@ -411,10 +405,10 @@ export function SessionEditorForm({
               <button
                 type="button"
                 onClick={() => setFormData((p) => ({ ...p, status: "scheduled" }))}
-                className={`py-2 rounded-md text-center transition-all ${
+                className={`py-2 rounded-md transition-all ${
                   formData.status === "scheduled"
-                    ? "bg-foreground text-background shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-[#E2E361] text-black"
+                    : "text-gray-600 hover:text-black"
                 }`}
               >
                 শিডিউল
@@ -422,10 +416,10 @@ export function SessionEditorForm({
               <button
                 type="button"
                 onClick={() => setFormData((p) => ({ ...p, status: "published" }))}
-                className={`py-2 rounded-md text-center transition-all ${
+                className={`py-2 rounded-md transition-all ${
                   formData.status === "published"
-                    ? "bg-foreground text-background shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-mint text-black"
+                    : "text-gray-600 hover:text-black"
                 }`}
               >
                 প্রকাশিত
@@ -433,94 +427,70 @@ export function SessionEditorForm({
             </div>
           </div>
 
-          {/* 2. Schedule Date & Time */}
-          {formData.status === "scheduled" && (
-            <div className="p-5 rounded-xl bg-card border border-border shadow-sm flex flex-col gap-3">
-              <span className="text-sm font-bold text-foreground flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-primary" />
-                <span>শিডিউল ও প্রকাশের সময়</span>
-              </span>
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div>
-                  <label className="text-muted-foreground block mb-1">তারিখ</label>
-                  <input
-                    type="date"
-                    value={formData.scheduled_date}
-                    onChange={(e) =>
-                      setFormData((p) => ({ ...p, scheduled_date: e.target.value }))
-                    }
-                    className="w-full h-9 px-2 bg-secondary/40 border border-border rounded-lg outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="text-muted-foreground block mb-1">সময়</label>
-                  <input
-                    type="time"
-                    value={formData.scheduled_time}
-                    onChange={(e) =>
-                      setFormData((p) => ({ ...p, scheduled_time: e.target.value }))
-                    }
-                    className="w-full h-9 px-2 bg-secondary/40 border border-border rounded-lg outline-none"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* 3. Batch & Session Number */}
-          <div className="p-5 rounded-xl bg-card border border-border shadow-sm flex flex-col gap-3">
-            <span className="text-sm font-bold text-foreground">ব্যাচ ও সেশন নম্বর</span>
-            <div className="flex flex-col gap-3 text-xs">
-              <div>
-                <label className="text-muted-foreground block mb-1">ব্যাচ নির্বাচন</label>
-                <select
+          {/* Batch & Session Number */}
+          <div className="p-5 rounded-xl bg-white border border-[#e5e7eb] flex flex-col gap-3">
+            <span className="text-xs font-mono font-bold text-gray-700 uppercase">ব্যাচ ও ক্রমবিন্যাস</span>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex flex-col gap-1">
+                <label className="text-[11px] font-mono text-gray-500">ব্যাচ নম্বর</label>
+                <input
+                  type="number"
                   value={formData.batch}
-                  onChange={(e) =>
-                    setFormData((p) => ({ ...p, batch: Number(e.target.value) }))
-                  }
-                  aria-label="ব্যাচ নম্বর নির্বাচন"
-                  className="w-full h-9 px-3 bg-secondary/40 border border-border rounded-lg outline-none cursor-pointer"
-                >
-                  <option value={24}>ব্যাচ ২৪ (বর্তমান চলমান)</option>
-                  <option value={23}>ব্যাচ ২৩</option>
-                  <option value={25}>ব্যাচ ২৫</option>
-                </select>
+                  onChange={(e) => setFormData((p) => ({ ...p, batch: Number(e.target.value) }))}
+                  className="w-full h-9 px-3 bg-[#f9fafb] border border-[#e5e7eb] rounded-lg outline-none font-bold text-black focus:border-mint"
+                />
               </div>
-
-              <div>
-                <label className="text-muted-foreground block mb-1">সেশন নম্বর</label>
+              <div className="flex flex-col gap-1">
+                <label className="text-[11px] font-mono text-gray-500">সেশন নম্বর</label>
                 <input
                   type="number"
                   value={formData.session_number}
-                  onChange={(e) =>
-                    setFormData((p) => ({ ...p, session_number: Number(e.target.value) }))
-                  }
-                  className="w-full h-9 px-3 bg-secondary/40 border border-border rounded-lg outline-none"
+                  onChange={(e) => setFormData((p) => ({ ...p, session_number: Number(e.target.value) }))}
+                  className="w-full h-9 px-3 bg-[#f9fafb] border border-[#e5e7eb] rounded-lg outline-none font-bold text-black focus:border-mint"
                 />
               </div>
             </div>
           </div>
 
-          {/* 4. Tags Multi-Select */}
-          <div className="p-5 rounded-xl bg-card border border-border shadow-sm flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-bold text-foreground">ট্যাগ ও ক্যাটাগরি</span>
-              <span className="text-xs text-muted-foreground">
-                {banglaNumber(formData.tags.length)}টি যুক্ত
-              </span>
+          {/* Publishing Schedule */}
+          <div className="p-5 rounded-xl bg-white border border-[#e5e7eb] flex flex-col gap-3">
+            <span className="text-xs font-mono font-bold text-gray-700 uppercase">সময়সূচী (Schedule)</span>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-gray-400" />
+                <input
+                  type="date"
+                  value={formData.scheduled_date}
+                  onChange={(e) => setFormData((p) => ({ ...p, scheduled_date: e.target.value }))}
+                  className="w-full h-9 px-3 bg-[#f9fafb] border border-[#e5e7eb] rounded-lg font-mono font-semibold text-black outline-none focus:border-mint text-xs"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-gray-400" />
+                <input
+                  type="time"
+                  value={formData.scheduled_time}
+                  onChange={(e) => setFormData((p) => ({ ...p, scheduled_time: e.target.value }))}
+                  className="w-full h-9 px-3 bg-[#f9fafb] border border-[#e5e7eb] rounded-lg font-mono font-semibold text-black outline-none focus:border-mint text-xs"
+                />
+              </div>
             </div>
+          </div>
 
-            <div className="flex flex-wrap gap-1.5 pt-1">
+          {/* Topic Tags */}
+          <div className="p-5 rounded-xl bg-white border border-[#e5e7eb] flex flex-col gap-3">
+            <span className="text-xs font-mono font-bold text-gray-700 uppercase">বিষয়ভিত্তিক ট্যাগ (Tags)</span>
+            <div className="flex flex-wrap items-center gap-1.5">
               {formData.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary border border-border text-xs text-foreground font-medium"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E2E361]/20 text-black border border-[#E2E361] text-xs font-mono font-bold"
                 >
-                  <span>{tag}</span>
+                  <span>#{tag}</span>
                   <button
                     type="button"
                     onClick={() => handleRemoveTag(tag)}
-                    className="hover:text-destructive transition-colors"
+                    className="hover:text-red-600 transition-colors"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -528,7 +498,7 @@ export function SessionEditorForm({
               ))}
             </div>
 
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center gap-2 mt-1">
               <input
                 type="text"
                 value={newTagInput}
@@ -539,24 +509,24 @@ export function SessionEditorForm({
                     handleAddTag();
                   }
                 }}
-                placeholder="+ ট্যাগ লিখুন..."
-                className="flex-1 h-9 px-3 bg-secondary/40 border border-border rounded-lg text-xs outline-none"
+                placeholder="নতুন ট্যাগ লিখুন..."
+                className="flex-1 h-9 px-3 bg-[#f9fafb] border border-[#e5e7eb] rounded-lg text-xs outline-none focus:border-mint focus:ring-1 focus:ring-mint focus:bg-white transition-all font-normal"
               />
               <button
                 type="button"
                 onClick={handleAddTag}
-                className="px-3 h-9 rounded-lg bg-foreground text-background text-xs font-semibold hover:opacity-90"
+                className="px-3.5 h-9 rounded-lg border border-mint bg-mint hover:bg-[#72eab0] text-black text-xs font-bold uppercase transition-all"
               >
                 যুক্ত
               </button>
             </div>
           </div>
 
-          {/* 5. Access Scope */}
-          <div className="p-5 rounded-xl bg-card border border-border shadow-sm flex flex-col gap-3">
-            <span className="text-sm font-bold text-foreground">অ্যাক্সেস পরিধি</span>
-            <div className="flex flex-col gap-2 text-xs">
-              <label className="flex items-center gap-3 p-2.5 rounded-lg bg-secondary/30 border border-border cursor-pointer">
+          {/* Visibility Options */}
+          <div className="p-5 rounded-xl bg-white border border-[#e5e7eb] flex flex-col gap-3 text-xs">
+            <span className="font-mono font-bold text-gray-700 uppercase">দৃশ্যমানতা (Visibility)</span>
+            <div className="flex flex-col gap-2">
+              <label className="flex items-center gap-3 p-3 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] cursor-pointer hover:bg-white transition-colors">
                 <input
                   type="radio"
                   name="visibility"
@@ -565,14 +535,14 @@ export function SessionEditorForm({
                   className="w-4 h-4 accent-teal-600"
                 />
                 <div>
-                  <span className="font-semibold text-foreground block">
+                  <span className="font-bold text-black block">
                     সবার জন্য উন্মুক্ত (Public)
                   </span>
-                  <span className="text-muted-foreground">অতিথিরাও পড়তে পারবেন</span>
+                  <span className="text-gray-500 font-bangla font-normal">অতিথিরাও পড়তে পারবেন</span>
                 </div>
               </label>
 
-              <label className="flex items-center gap-3 p-2.5 rounded-lg bg-secondary/30 border border-border cursor-pointer">
+              <label className="flex items-center gap-3 p-3 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] cursor-pointer hover:bg-white transition-colors">
                 <input
                   type="radio"
                   name="visibility"
@@ -583,10 +553,10 @@ export function SessionEditorForm({
                   className="w-4 h-4 accent-teal-600"
                 />
                 <div>
-                  <span className="font-semibold text-foreground block">
+                  <span className="font-bold text-black block">
                     শুধু নিবন্ধিত সদস্য (Members only)
                   </span>
-                  <span className="text-muted-foreground">লগইন আবশ্যক</span>
+                  <span className="text-gray-500 font-bangla font-normal">লগইন আবশ্যক</span>
                 </div>
               </label>
             </div>
@@ -595,9 +565,9 @@ export function SessionEditorForm({
       </div>
 
       {/* STICKY BOTTOM BAR: Publishing Action Controls */}
-      <div className="fixed bottom-0 left-72 right-0 h-16 bg-card border-t border-border px-8 flex items-center justify-between z-40 shadow-sm font-bangla">
-        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-          <Save className="w-4 h-4 text-primary" />
+      <div className="fixed bottom-0 left-72 right-0 h-16 bg-white border-t border-[#e5e7eb] px-8 flex items-center justify-between z-40 font-bangla">
+        <div className="flex items-center gap-3 text-xs text-gray-500 font-mono font-semibold">
+          <Save className="w-4 h-4 text-gray-400" />
           <span>সকল পরিবর্তন ড্রাফটে স্বয়ংক্রিয়ভাবে সিঙ্ক হচ্ছে</span>
         </div>
 
@@ -606,7 +576,7 @@ export function SessionEditorForm({
             type="button"
             onClick={handleSaveDraft}
             disabled={isSubmitting}
-            className="px-4 py-2 rounded-xl border border-border bg-card hover:bg-secondary text-xs font-semibold text-foreground transition-all"
+            className="px-4 py-2 rounded-lg border border-[#e5e7eb] bg-white hover:bg-gray-50 text-xs font-mono font-bold text-gray-700 hover:text-black uppercase transition-all"
           >
             খসড়া সংরক্ষণ
           </button>
@@ -614,7 +584,7 @@ export function SessionEditorForm({
             type="button"
             onClick={handlePublish}
             disabled={isSubmitting}
-            className="px-6 py-2 rounded-xl bg-foreground text-background hover:opacity-95 text-xs font-semibold transition-all shadow-sm"
+            className="px-6 py-2 rounded-lg border border-mint bg-mint hover:bg-[#72eab0] text-black text-xs font-mono font-bold uppercase tracking-wider transition-all"
           >
             {formData.status === "scheduled" ? "শিডিউল নিশ্চিত করুন" : "প্রকাশ করুন"}
           </button>

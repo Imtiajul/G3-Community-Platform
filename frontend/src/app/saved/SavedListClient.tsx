@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 export interface SavedSessionItem {
-  id: number;
+  id: number | string;
   slug: string;
   title: string;
   excerpt: string;
@@ -88,7 +88,6 @@ export function SavedListClient({
   const [activeFilter, setActiveFilter] = useState<string>("all");
 
   const handleRemoveBookmark = async (session: SavedSessionItem) => {
-    // Optimistically remove
     setSessions((prev) => prev.filter((s) => s.id !== session.id));
 
     toast("সেশনটি তালিকা থেকে সরানো হয়েছে", {
@@ -107,7 +106,7 @@ export function SavedListClient({
           "Content-Type": "application/json",
           "X-Requested-With": "XMLHttpRequest",
         },
-        body: JSON.stringify({ session_id: session.id }),
+        body: JSON.stringify({ slug: session.slug, session_id: session.id }),
       });
     } catch {
       // Backend sync error handled gracefully
@@ -137,37 +136,37 @@ export function SavedListClient({
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">
-                ব্যক্তিগত সংগ্রহশালা
+              <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest font-mono">
+                ব্যক্তিগত সংগ্রহশালা // BOOKMARKS
               </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-teal-600" />
-              <span className="text-xs text-muted-foreground">নোটবুক</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
+              <span className="text-xs text-gray-500 font-mono">নোটবুক</span>
             </div>
             <div className="flex items-baseline gap-3">
-              <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-                সংরক্ষিত
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-black tracking-tight font-headline">
+                সংরক্ষিত সেশন
               </h1>
-              <span className="px-3 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-900 border border-emerald-200">
-                মোট {banglaNumber(sessions.length)}টি সংরক্ষিত সেশন
+              <span className="px-3 py-0.5 rounded-full text-xs font-mono font-bold bg-[#E2E361]/20 text-black border border-[#E2E361]">
+                মোট {banglaNumber(sessions.length)}টি সংরক্ষিত
               </span>
             </div>
           </div>
 
           {/* Search Input */}
           <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="সংরক্ষিত সেশন খুঁজুন..."
-              className="w-full h-10 pl-10 pr-9 bg-card border border-border rounded-xl text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary shadow-sm transition-all"
+              className="w-full h-10 pl-10 pr-9 bg-[#f9fafb] border border-[#e5e7eb] rounded-lg text-sm text-black placeholder:text-gray-400 focus:outline-none focus:border-mint focus:ring-1 focus:ring-mint focus:bg-white transition-all font-normal"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
                 aria-label="অনুসন্ধান মুছুন"
               >
                 <X className="w-4 h-4" />
@@ -182,10 +181,10 @@ export function SavedListClient({
             <button
               type="button"
               onClick={() => setActiveFilter("all")}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all border ${
+              className={`px-4 py-1.5 rounded-full text-xs font-mono font-bold transition-all border ${
                 activeFilter === "all"
-                  ? "bg-foreground text-background border-foreground shadow-sm"
-                  : "bg-card text-muted-foreground hover:bg-secondary border-border"
+                  ? "bg-mint text-black border-mint"
+                  : "bg-white text-gray-600 border-[#e5e7eb] hover:bg-gray-50 hover:text-black"
               }`}
             >
               সব ({banglaNumber(sessions.length)})
@@ -193,10 +192,10 @@ export function SavedListClient({
             <button
               type="button"
               onClick={() => setActiveFilter("batch-24")}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all border ${
+              className={`px-4 py-1.5 rounded-full text-xs font-mono font-bold transition-all border ${
                 activeFilter === "batch-24"
-                  ? "bg-foreground text-background border-foreground shadow-sm"
-                  : "bg-card text-muted-foreground hover:bg-secondary border-border"
+                  ? "bg-mint text-black border-mint"
+                  : "bg-white text-gray-600 border-[#e5e7eb] hover:bg-gray-50 hover:text-black"
               }`}
             >
               ব্যাচ ২৪
@@ -204,10 +203,10 @@ export function SavedListClient({
             <button
               type="button"
               onClick={() => setActiveFilter("batch-23")}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all border ${
+              className={`px-4 py-1.5 rounded-full text-xs font-mono font-bold transition-all border ${
                 activeFilter === "batch-23"
-                  ? "bg-foreground text-background border-foreground shadow-sm"
-                  : "bg-card text-muted-foreground hover:bg-secondary border-border"
+                  ? "bg-mint text-black border-mint"
+                  : "bg-white text-gray-600 border-[#e5e7eb] hover:bg-gray-50 hover:text-black"
               }`}
             >
               ব্যাচ ২৩
@@ -215,17 +214,17 @@ export function SavedListClient({
             <button
               type="button"
               onClick={() => setActiveFilter("important")}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all border ${
+              className={`px-4 py-1.5 rounded-full text-xs font-mono font-bold transition-all border ${
                 activeFilter === "important"
-                  ? "bg-foreground text-background border-foreground shadow-sm"
-                  : "bg-card text-muted-foreground hover:bg-secondary border-border"
+                  ? "bg-mint text-black border-mint"
+                  : "bg-white text-gray-600 border-[#e5e7eb] hover:bg-gray-50 hover:text-black"
               }`}
             >
               গুরুত্বপূর্ণ
             </button>
           </div>
 
-          <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+          <div className="flex items-center gap-1.5 text-gray-500 text-xs font-mono">
             <RotateCcw className="w-3.5 h-3.5" />
             <span>সর্বশেষ সংরক্ষিত আগে</span>
           </div>
@@ -238,17 +237,17 @@ export function SavedListClient({
           {filteredSessions.map((session) => (
             <article
               key={session.id}
-              className="group bg-card rounded-xl p-6 border border-border transition-all relative flex flex-col gap-4 hover:border-foreground/30 shadow-sm"
+              className="group bg-white rounded-xl p-6 border border-[#e5e7eb] transition-all relative flex flex-col gap-4 hover:border-gray-300 hover:-translate-y-0.5"
             >
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-900 border border-amber-200">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-[#E2E361]/20 text-black border border-[#E2E361]">
                     ব্যাচ {banglaNumber(session.batch)}
                   </span>
-                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-secondary text-secondary-foreground border border-border">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-white text-gray-700 border border-[#e5e7eb]">
                     সেশন {banglaNumber(session.session_number)}
                   </span>
-                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-teal-50 text-teal-800 border border-teal-200">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-[#63DB9A]/20 text-black border border-[#63DB9A]">
                     {session.tag}
                   </span>
                 </div>
@@ -256,42 +255,42 @@ export function SavedListClient({
                 <button
                   type="button"
                   onClick={() => handleRemoveBookmark(session)}
-                  className="flex items-center gap-1.5 text-muted-foreground hover:text-destructive px-2.5 py-1 rounded-lg transition-all text-xs font-medium"
+                  className="flex items-center gap-1.5 text-gray-600 hover:text-black hover:bg-[#FF49D2]/15 px-2.5 py-1 rounded-lg border border-[#e5e7eb] bg-white transition-all text-xs font-semibold"
                   title="সংরক্ষণ বাতিল করুন"
                 >
-                  <BookmarkX className="w-4 h-4 text-rose-500" />
+                  <BookmarkX className="w-4 h-4 text-gray-600" />
                   <span className="hidden sm:inline">বুকমার্ক সরান</span>
                 </button>
               </div>
 
               <div className="flex flex-col gap-2">
                 <Link href={`/sessions/${session.slug}`}>
-                  <h2 className="text-lg sm:text-xl font-bold text-foreground tracking-tight group-hover:text-primary transition-colors cursor-pointer leading-snug">
+                  <h2 className="text-lg sm:text-xl font-bold text-black tracking-tight hover:underline transition-colors cursor-pointer leading-snug font-headline">
                     {session.title}
                   </h2>
                 </Link>
-                <p className="text-[15px] sm:text-[16px] text-muted-foreground leading-relaxed">
+                <p className="text-[15px] sm:text-[16px] text-gray-600 leading-relaxed font-normal">
                   {session.excerpt}
                 </p>
               </div>
 
-              <div className="pt-3 mt-1 flex items-center justify-between flex-wrap gap-3 bg-secondary/50 px-4 py-2.5 rounded-lg border border-border">
+              <div className="pt-3 mt-1 flex items-center justify-between flex-wrap gap-3 bg-[#f9fafb] px-4 py-2.5 rounded-lg border border-[#e5e7eb]">
                 <div className="flex items-center gap-4 flex-wrap">
-                  <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
-                    <Bookmark className="w-3.5 h-3.5 text-primary" />
+                  <div className="flex items-center gap-1.5 text-gray-600 text-xs font-mono">
+                    <Bookmark className="w-3.5 h-3.5 text-gray-500" />
                     <span>সংরক্ষিত: {session.saved_date}</span>
                   </div>
-                  <span className="w-1 h-1 rounded-full bg-border" />
-                  <div className="flex items-center gap-1.5 text-xs text-foreground">
-                    <Mic className="w-3.5 h-3.5 text-muted-foreground" />
-                    <span className="text-muted-foreground">পরামর্শক:</span>
-                    <span className="font-semibold">{session.speaker}</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
+                  <div className="flex items-center gap-1.5 text-xs text-gray-600 font-mono">
+                    <Mic className="w-3.5 h-3.5 text-gray-500" />
+                    <span className="text-gray-500">পরামর্শক:</span>
+                    <span className="font-bold text-black">{session.speaker}</span>
                   </div>
                 </div>
 
                 <Link
                   href={`/sessions/${session.slug}`}
-                  className="inline-flex items-center gap-1 text-primary hover:underline text-xs font-semibold transition-all group-hover:translate-x-0.5"
+                  className="inline-flex items-center gap-1.5 text-black text-xs font-bold transition-all bg-mint hover:bg-[#72eab0] px-3 py-1.5 rounded-lg border border-mint"
                 >
                   <span>সেশন পড়ুন</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -301,19 +300,19 @@ export function SavedListClient({
           ))}
         </div>
       ) : (
-        <div className="bg-card rounded-2xl p-10 md:p-14 border border-border flex flex-col items-center text-center shadow-sm">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 bg-emerald-100 text-emerald-800 border border-emerald-200">
-            <Bookmark className="w-8 h-8 text-emerald-700" />
+        <div className="bg-white rounded-xl p-10 md:p-14 border border-[#e5e7eb] flex flex-col items-center text-center">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 bg-[#E2E361]/20 text-black border border-[#E2E361]">
+            <Bookmark className="w-8 h-8 text-black" />
           </div>
-          <h3 className="text-xl font-bold text-foreground mb-2">
+          <h3 className="text-xl font-extrabold text-black mb-2 font-headline">
             কোনো সংরক্ষিত সেশন নেই
           </h3>
-          <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6 leading-relaxed">
+          <p className="text-sm text-gray-500 max-w-md mx-auto mb-6 leading-relaxed font-normal">
             পছন্দের সেশনগুলো পরে পড়ার জন্য বুকমার্ক আইকনে ক্লিক করে সংরক্ষণ করুন। প্রয়োজনীয় দিকনির্দেশনা ও নোটস আপনার হাতের কাছেই সাজানো থাকবে।
           </p>
           <Link
             href="/sessions"
-            className="h-10 px-5 rounded-xl text-sm font-semibold border border-border bg-foreground text-background hover:opacity-95 transition-all inline-flex items-center gap-2"
+            className="h-10 px-5 rounded-lg text-sm font-bold border border-mint bg-mint text-black hover:bg-[#72eab0] transition-all inline-flex items-center gap-2"
           >
             <BookOpen className="w-4 h-4" />
             <span>সেশন দেখুন</span>

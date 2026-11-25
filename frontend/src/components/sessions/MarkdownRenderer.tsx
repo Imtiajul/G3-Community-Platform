@@ -31,7 +31,7 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
                 href={isSafe ? href : "#"}
                 rel="noopener noreferrer ugc nofollow"
                 target={href?.startsWith("http") ? "_blank" : undefined}
-                className="text-primary underline font-medium hover:text-primary-hover transition-colors"
+                className="text-dark underline decoration-mint decoration-2 font-bold hover:bg-mint px-0.5 transition-colors"
                 {...props}
               >
                 {children}
@@ -39,7 +39,7 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
             );
           },
           blockquote: ({ children }) => (
-            <blockquote className="my-6 border-l-4 border-primary pl-4 py-1 italic bg-muted/60 rounded-r-lg font-reading">
+            <blockquote className="my-6 border-l-4 border-mint pl-4 py-3 italic bg-[#E2E361]/10 border border-[#e5e7eb] rounded-lg font-reading">
               {children}
             </blockquote>
           ),

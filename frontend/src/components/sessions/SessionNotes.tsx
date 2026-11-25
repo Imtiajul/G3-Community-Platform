@@ -57,13 +57,15 @@ export function SessionNotes({ slug }: SessionNotesProps) {
   };
 
   return (
-    <section className="mt-10 p-6 rounded-xl bg-card border border-border shadow-sm font-bangla">
+    <section className="mt-10 p-6 rounded-xl border border-[#e5e7eb] bg-white font-bangla">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Edit3 className="w-5 h-5 text-primary" />
-          <h3 className="text-base font-bold text-foreground">আমার ব্যক্তিগত নোট</h3>
+          <div className="w-8 h-8 rounded-lg bg-[#63DB9A]/20 border border-[#63DB9A] flex items-center justify-center">
+            <Edit3 className="w-4 h-4 text-black" />
+          </div>
+          <h3 className="text-base font-bold text-black font-headline">আমার ব্যক্তিগত নোট</h3>
         </div>
-        <span className="text-xs text-muted-foreground flex items-center gap-1">
+        <span className="text-xs text-gray-500 flex items-center gap-1 font-mono">
           <Lock className="w-3.5 h-3.5" /> শুধুমাত্র আপনি দেখতে পারবেন
         </span>
       </div>
@@ -73,7 +75,7 @@ export function SessionNotes({ slug }: SessionNotesProps) {
         onChange={(e) => setNoteContent(e.target.value)}
         placeholder="এই সেশন থেকে আপনার নিজস্ব উপলব্ধি বা গুরুত্বপূর্ণ পয়েন্টগুলো লিখে রাখুন..."
         rows={4}
-        className="w-full text-sm mb-3"
+        className="w-full text-sm mb-3 border-[#e5e7eb] rounded-lg focus-visible:ring-1 focus-visible:ring-mint"
       />
 
       <div className="flex justify-end">
@@ -82,16 +84,16 @@ export function SessionNotes({ slug }: SessionNotesProps) {
           size="sm"
           onClick={handleSave}
           disabled={saving}
-          className="font-semibold text-xs gap-1.5"
+          className="font-bold text-xs gap-1.5 bg-mint hover:bg-[#72eab0] text-black border border-mint rounded-lg"
         >
           {saved ? (
             <>
-              <Check className="w-4 h-4 text-emerald-400" />
-              <span>সংরক্ষিত</span>
+              <Check className="w-3.5 h-3.5" />
+              <span>সংরক্ষিত!</span>
             </>
           ) : (
             <>
-              <Save className="w-4 h-4" />
+              <Save className="w-3.5 h-3.5" />
               <span>{saving ? "সংরক্ষণ হচ্ছে..." : "নোট সংরক্ষণ করুন"}</span>
             </>
           )}

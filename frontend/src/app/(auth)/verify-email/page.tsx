@@ -47,30 +47,30 @@ export default function VerifyEmailPage() {
       <header className="w-full pt-6 pb-4">
         <div className="max-w-md mx-auto text-center">
           <Link href="/" className="inline-flex flex-col items-center gap-1.5 group">
-            <div className="w-10 h-10 rounded-full bg-secondary border border-border flex items-center justify-center text-foreground shadow-sm">
+            <div className="w-10 h-10 rounded-lg bg-mint border border-mint flex items-center justify-center text-dark shadow-sm group-hover:scale-105 transition-transform">
               <span className="material-symbols-outlined text-[20px]">auto_stories</span>
             </div>
-            <span className="text-base font-bold tracking-tight text-foreground">
+            <span className="text-base font-bold tracking-tight text-foreground font-space-grotesk">
               নিজের বলার মতো একটা গল্প
             </span>
           </Link>
         </div>
       </header>
 
-      <main className="w-full max-w-md mx-auto bg-card border border-border rounded-xl p-6 sm:p-8 shadow-sm text-center">
-        <div className="w-16 h-16 rounded-2xl bg-secondary border border-border flex items-center justify-center mx-auto mb-6 text-foreground shadow-sm">
-          <Mail className="w-8 h-8 text-primary" />
+      <main className="w-full max-w-md mx-auto bg-white border border-[#e5e7eb] rounded-xl p-6 sm:p-8 shadow-sm text-center">
+        <div className="w-16 h-16 rounded-xl bg-lime border border-lime flex items-center justify-center mx-auto mb-6 text-dark shadow-sm">
+          <Mail className="w-8 h-8 text-dark" />
         </div>
 
-        <h1 className="text-2xl font-bold tracking-tight text-foreground mb-2">
+        <h1 className="text-2xl font-extrabold tracking-tight text-foreground mb-2 font-space-grotesk">
           ইমেইল যাচাই করুন
         </h1>
 
         <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-          আমরা <span className="font-semibold text-foreground">{email}</span> ঠিকানায় একটি যাচাইকরণ লিংক পাঠিয়েছি। আপনার ইনবক্স চেক করে লিংকে ক্লিক করুন।
+          আমরা <span className="font-semibold text-foreground font-mono bg-lime/30 px-1 py-0.5 rounded border border-[#e5e7eb]">{email}</span> ঠিকানায় একটি যাচাইকরণ লিংক পাঠিয়েছি। আপনার ইনবক্স চেক করে লিংকে ক্লিক করুন।
         </p>
 
-        <div className="bg-secondary/60 border border-border rounded-lg p-3 text-xs text-muted-foreground mb-6 leading-relaxed">
+        <div className="bg-lime/20 border border-lime rounded-lg p-3 text-xs text-dark mb-6 leading-relaxed font-medium">
           ⚠️ ইনবক্সে লিংক না পেলে আপনার স্প্যাম (Spam) বা প্রমোশন (Promotions) ফোল্ডারটি চেক করুন।
         </div>
 
@@ -80,7 +80,7 @@ export default function VerifyEmailPage() {
             variant="outline"
             disabled={resending || cooldown > 0}
             onClick={handleResend}
-            className="w-full font-medium text-xs sm:text-sm gap-2"
+            className="w-full font-semibold text-xs sm:text-sm gap-2 rounded-lg"
           >
             <RotateCcw className="w-4 h-4" />
             <span>
@@ -92,7 +92,7 @@ export default function VerifyEmailPage() {
             </span>
           </Button>
 
-          <Button asChild className="w-full font-bold">
+          <Button asChild className="w-full font-semibold rounded-lg">
             <Link href="/login">লগইন পেজে যান</Link>
           </Button>
         </div>

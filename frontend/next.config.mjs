@@ -16,6 +16,10 @@ const nextConfig = {
         hostname: "stitch.googleapis.com",
       },
       {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
         protocol: "http",
         hostname: "localhost",
       },

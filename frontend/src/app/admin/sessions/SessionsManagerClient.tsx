@@ -18,11 +18,10 @@ import {
   Copy,
   Trash2,
   FilterX,
-  ChevronDown,
 } from "lucide-react";
 
 export interface SessionRow {
-  id: number;
+  id: number | string;
   slug: string;
   title: string;
   excerpt: string;
@@ -30,7 +29,7 @@ export interface SessionRow {
   session_number: number;
   date_formatted: string;
   time_formatted: string;
-  status: "published" | "scheduled" | "draft";
+  status: "published" | "scheduled" | "draft" | string;
   likes_count: number;
   comments_count: number;
 }
@@ -103,12 +102,18 @@ const INITIAL_SESSIONS: SessionRow[] = [
   },
 ];
 
-export function SessionsManagerClient() {
-  const [sessions, setSessions] = useState<SessionRow[]>(INITIAL_SESSIONS);
+export function SessionsManagerClient({
+  initialSessions,
+}: {
+  initialSessions?: SessionRow[];
+}) {
+  const [sessions, setSessions] = useState<SessionRow[]>(
+    initialSessions && initialSessions.length > 0 ? initialSessions : INITIAL_SESSIONS
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [batchFilter, setBatchFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [selectedIds, setSelectedIds] = useState<(number | string)[]>([]);
 
   const handleDuplicate = (session: SessionRow) => {
     const newSession: SessionRow = {
@@ -125,10 +130,24 @@ export function SessionsManagerClient() {
     toast.success("সেশনটি অনুলিপি করা হয়েছে");
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number | string, slug?: string) => {
     setSessions((prev) => prev.filter((s) => s.id !== id));
     setSelectedIds((prev) => prev.filter((i) => i !== id));
     toast.success("সেশনটি মুছে ফেলা হয়েছে");
+
+    if (slug) {
+      try {
+        await fetch(`/api/bff/admin/sessions/${slug}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+          },
+        });
+      } catch {
+        // Graceful
+      }
+    }
   };
 
   const toggleSelectAll = () => {
@@ -139,7 +158,7 @@ export function SessionsManagerClient() {
     }
   };
 
-  const toggleSelectOne = (id: number) => {
+  const toggleSelectOne = (id: number | string) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
@@ -178,20 +197,20 @@ export function SessionsManagerClient() {
   });
 
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <div className="flex flex-col gap-6 w-full font-bangla">
       {/* Top Ambient Subtlety & Action Row */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-border">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#e5e7eb]">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-              সেশনসমূহ
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-black tracking-tight font-headline">
+              সেশন ব্যবস্থাপনা
             </h1>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary text-foreground text-xs font-semibold border border-border">
-              <span className="w-1.5 h-1.5 rounded-full bg-teal-600 animate-pulse" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E2E361]/20 text-black text-xs font-mono font-bold border border-[#E2E361]">
+              <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
               মোট {banglaNumber(sessions.length)}টি সেশন
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl">
+          <p className="text-xs sm:text-sm text-gray-500 max-w-2xl font-normal">
             কমিউনিটির শিক্ষণ সেশনসমূহ পরিচালনা, সম্পাদনা, প্রকাশনা ক্যালেন্ডার ও শিক্ষার্থী সংশ্লিষ্টতা পর্যবেক্ষণ করুন।
           </p>
         </div>
@@ -200,14 +219,14 @@ export function SessionsManagerClient() {
           <button
             type="button"
             onClick={handleExportCSV}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-card hover:bg-secondary text-foreground text-xs font-semibold transition-all border border-border shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white hover:bg-gray-50 text-gray-700 hover:text-black text-xs font-semibold transition-all border border-[#e5e7eb]"
           >
-            <Download className="w-4 h-4 text-muted-foreground" />
+            <Download className="w-4 h-4 text-gray-500" />
             <span>এক্সপোর্ট (CSV)</span>
           </button>
           <Link
             href="/admin/sessions/new"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-foreground text-background hover:opacity-95 text-xs font-semibold transition-all shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-mint border border-mint text-black hover:bg-[#72eab0] text-xs font-bold transition-all"
           >
             <Plus className="w-4 h-4" />
             <span>+ নতুন সেশন লিখুন</span>
@@ -217,67 +236,67 @@ export function SessionsManagerClient() {
 
       {/* Quick Stats Bento */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl bg-card border border-border flex items-center justify-between shadow-sm">
+        <div className="p-4 rounded-xl bg-white border border-[#e5e7eb] flex items-center justify-between hover:border-gray-300 hover:-translate-y-0.5 transition-all">
           <div className="flex flex-col">
-            <span className="text-xs text-muted-foreground font-medium">সক্রিয় ও প্রকাশিত</span>
-            <span className="text-xl font-bold text-foreground mt-1">১৫২টি</span>
-            <span className="text-[11px] text-emerald-600 font-semibold flex items-center gap-0.5 mt-0.5">
+            <span className="text-xs text-gray-500 font-mono font-semibold">সক্রিয় ও প্রকাশিত</span>
+            <span className="text-2xl font-extrabold text-black mt-1 font-headline">১৫২টি</span>
+            <span className="text-[11px] text-gray-600 font-mono font-medium flex items-center gap-0.5 mt-0.5">
               ৯৫% সমাপ্তি হার
             </span>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-[#63DB9A]/20 border border-[#63DB9A] text-black flex items-center justify-center">
             <CheckCircle2 className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-card border border-border flex items-center justify-between shadow-sm">
+        <div className="p-4 rounded-xl bg-white border border-[#e5e7eb] flex items-center justify-between hover:border-gray-300 hover:-translate-y-0.5 transition-all">
           <div className="flex flex-col">
-            <span className="text-xs text-muted-foreground font-medium">শিডিউলকৃত সেশন</span>
-            <span className="text-xl font-bold text-foreground mt-1">৫টি</span>
-            <span className="text-[11px] text-amber-700 font-semibold flex items-center gap-0.5 mt-0.5">
+            <span className="text-xs text-gray-500 font-mono font-semibold">শিডিউলকৃত সেশন</span>
+            <span className="text-2xl font-extrabold text-black mt-1 font-headline">৫টি</span>
+            <span className="text-[11px] text-gray-600 font-mono font-medium flex items-center gap-0.5 mt-0.5">
               আগামী ৩ দিনে
             </span>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-[#E2E361]/20 border border-[#E2E361] text-black flex items-center justify-center">
             <Clock className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-card border border-border flex items-center justify-between shadow-sm">
+        <div className="p-4 rounded-xl bg-white border border-[#e5e7eb] flex items-center justify-between hover:border-gray-300 hover:-translate-y-0.5 transition-all">
           <div className="flex flex-col">
-            <span className="text-xs text-muted-foreground font-medium">খসড়া সংরক্ষিত</span>
-            <span className="text-xl font-bold text-foreground mt-1">৩টি</span>
-            <span className="text-[11px] text-muted-foreground mt-0.5">অসম্পূর্ণ কনটেন্ট</span>
+            <span className="text-xs text-gray-500 font-mono font-semibold">খসড়া সংরক্ষিত</span>
+            <span className="text-2xl font-extrabold text-black mt-1 font-headline">৩টি</span>
+            <span className="text-[11px] text-gray-500 font-mono mt-0.5">অসম্পূর্ণ কনটেন্ট</span>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-secondary text-foreground flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-gray-100 border border-[#e5e7eb] text-gray-700 flex items-center justify-center">
             <FileEdit className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-card border border-border flex items-center justify-between shadow-sm">
+        <div className="p-4 rounded-xl bg-white border border-[#e5e7eb] flex items-center justify-between hover:border-gray-300 hover:-translate-y-0.5 transition-all">
           <div className="flex flex-col">
-            <span className="text-xs text-muted-foreground font-medium">মোট মিথস্ক্রিয়া (মাসিক)</span>
-            <span className="text-xl font-bold text-foreground mt-1">৪৮,৩২০</span>
-            <span className="text-[11px] text-rose-600 font-semibold flex items-center gap-0.5 mt-0.5">
+            <span className="text-xs text-gray-500 font-mono font-semibold">মোট মিথস্ক্রিয়া</span>
+            <span className="text-2xl font-extrabold text-black mt-1 font-headline">৪৮,৩২০</span>
+            <span className="text-[11px] text-gray-600 font-mono font-medium flex items-center gap-0.5 mt-0.5">
               লাইক ও প্রতিক্রিয়া
             </span>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-[#FF49D2]/15 border border-[#FF49D2] text-black flex items-center justify-center">
             <Heart className="w-5 h-5" />
           </div>
         </div>
       </div>
 
       {/* Filter & Search Toolbar */}
-      <div className="bg-card rounded-2xl p-4 border border-border flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 shadow-sm">
+      <div className="bg-white rounded-xl p-4 border border-[#e5e7eb] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
         <div className="relative flex-1 min-w-[280px]">
-          <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="সেশন শিরোনাম, সারসংক্ষেপ বা কি-ওয়ার্ড দিয়ে খুঁজুন..."
-            className="w-full h-10 pl-10 pr-4 rounded-xl bg-secondary/40 border border-border text-xs text-foreground placeholder:text-muted-foreground outline-none focus:bg-card focus:ring-1 focus:ring-primary transition-all"
+            className="w-full h-10 pl-10 pr-4 rounded-lg bg-[#f9fafb] border border-[#e5e7eb] text-xs text-black placeholder:text-gray-400 outline-none focus:border-mint focus:ring-1 focus:ring-mint focus:bg-white transition-all font-normal"
           />
         </div>
 
@@ -286,7 +305,7 @@ export function SessionsManagerClient() {
             value={batchFilter}
             onChange={(e) => setBatchFilter(e.target.value)}
             aria-label="ব্যাচ নির্বাচন"
-            className="h-10 px-3.5 rounded-xl bg-card border border-border text-xs text-foreground outline-none cursor-pointer"
+            className="h-10 px-3.5 rounded-lg bg-white border border-[#e5e7eb] text-xs text-black font-semibold outline-none cursor-pointer"
           >
             <option value="all">সব ব্যাচ (সকল)</option>
             <option value="24">ব্যাচ ২৪ (চলমান)</option>
@@ -298,7 +317,7 @@ export function SessionsManagerClient() {
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             aria-label="স্ট্যাটাস নির্বাচন"
-            className="h-10 px-3.5 rounded-xl bg-card border border-border text-xs text-foreground outline-none cursor-pointer"
+            className="h-10 px-3.5 rounded-lg bg-white border border-[#e5e7eb] text-xs text-black font-semibold outline-none cursor-pointer"
           >
             <option value="all">সব স্ট্যাটাস</option>
             <option value="published">প্রকাশিত (Published)</option>
@@ -313,7 +332,7 @@ export function SessionsManagerClient() {
               setBatchFilter("all");
               setStatusFilter("all");
             }}
-            className="p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary border border-border transition-colors"
+            className="p-2.5 rounded-lg text-gray-600 hover:text-black hover:bg-gray-50 border border-[#e5e7eb] transition-colors"
             title="ফিল্টার রিসেট করুন"
           >
             <FilterX className="w-4 h-4" />
@@ -323,10 +342,10 @@ export function SessionsManagerClient() {
 
       {/* Bulk Action Bar (Contextual) */}
       {selectedIds.length > 0 && (
-        <div className="flex items-center justify-between px-4 py-2.5 bg-secondary/50 border border-border rounded-xl text-xs font-medium">
+        <div className="flex items-center justify-between px-4 py-2.5 bg-[#f9fafb] border border-[#e5e7eb] rounded-lg text-xs font-mono font-bold">
           <div className="flex items-center gap-3">
-            <span className="font-semibold text-foreground">
-              {banglaNumber(selectedIds.length)}টি সেশন নির্বাচিত
+            <span className="text-black">
+              {banglaNumber(selectedIds.length)}টি সেশন নির্বাচিত // SELECTED
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -339,7 +358,7 @@ export function SessionsManagerClient() {
                 setSelectedIds([]);
                 toast.success("নির্বাচিত সেশনগুলো মুছে ফেলা হয়েছে");
               }}
-              className="px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 text-xs font-semibold flex items-center gap-1 transition-colors"
+              className="px-3 py-1.5 rounded-lg bg-[#FF49D2]/15 border border-[#FF49D2] text-black text-xs font-bold flex items-center gap-1 transition-all"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>মুছুন</span>
@@ -349,11 +368,11 @@ export function SessionsManagerClient() {
       )}
 
       {/* Sessions Data Table */}
-      <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
+      <div className="bg-white rounded-xl border border-[#e5e7eb] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-secondary/40 text-muted-foreground text-xs font-semibold border-b border-border select-none">
+              <tr className="bg-[#f9fafb] text-gray-700 text-xs font-mono font-semibold border-b border-[#e5e7eb] select-none uppercase">
                 <th className="py-3.5 pl-5 pr-3 w-12 text-center">
                   <input
                     type="checkbox"
@@ -366,21 +385,21 @@ export function SessionsManagerClient() {
                     className="w-4 h-4 rounded accent-teal-600 cursor-pointer"
                   />
                 </th>
-                <th className="py-3.5 px-4 font-semibold">শিরোনাম ও সারসংক্ষেপ</th>
-                <th className="py-3.5 px-3 font-semibold text-center whitespace-nowrap">ব্যাচ</th>
-                <th className="py-3.5 px-3 font-semibold text-center whitespace-nowrap">সেশন নং</th>
-                <th className="py-3.5 px-4 font-semibold whitespace-nowrap">তারিখ / সময়সূচী</th>
-                <th className="py-3.5 px-4 font-semibold text-center whitespace-nowrap">স্ট্যাটাস</th>
-                <th className="py-3.5 px-3 font-semibold text-center whitespace-nowrap">লাইক</th>
-                <th className="py-3.5 px-3 font-semibold text-center whitespace-nowrap">মন্তব্য</th>
-                <th className="py-3.5 pl-3 pr-5 font-semibold text-right whitespace-nowrap">অ্যাকশন</th>
+                <th className="py-3.5 px-4">শিরোনাম ও সারসংক্ষেপ</th>
+                <th className="py-3.5 px-3 text-center whitespace-nowrap">ব্যাচ</th>
+                <th className="py-3.5 px-3 text-center whitespace-nowrap">সেশন নং</th>
+                <th className="py-3.5 px-4 whitespace-nowrap">তারিখ / সময়সূচী</th>
+                <th className="py-3.5 px-4 text-center whitespace-nowrap">স্ট্যাটাস</th>
+                <th className="py-3.5 px-3 text-center whitespace-nowrap">লাইক</th>
+                <th className="py-3.5 px-3 text-center whitespace-nowrap">মন্তব্য</th>
+                <th className="py-3.5 pl-3 pr-5 text-right whitespace-nowrap">অ্যাকশন</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border text-xs">
+            <tbody className="divide-y divide-[#e5e7eb] text-xs">
               {filteredSessions.map((session) => (
                 <tr
                   key={session.id}
-                  className="hover:bg-secondary/20 transition-colors group"
+                  className="hover:bg-gray-50 transition-colors group"
                 >
                   <td className="py-4 pl-5 pr-3 text-center">
                     <input
@@ -395,69 +414,69 @@ export function SessionsManagerClient() {
                     <div className="flex flex-col min-w-[280px] max-w-md">
                       <Link
                         href={`/admin/sessions/${session.slug}/edit`}
-                        className="font-bold text-foreground hover:text-primary transition-colors text-sm line-clamp-1"
+                        className="font-bold text-black hover:underline transition-colors text-sm line-clamp-1 font-headline"
                       >
                         {session.title}
                       </Link>
-                      <span className="text-muted-foreground line-clamp-1 mt-0.5 text-xs">
+                      <span className="text-gray-500 line-clamp-1 mt-0.5 text-xs font-normal">
                         {session.excerpt}
                       </span>
                     </div>
                   </td>
                   <td className="py-4 px-3 text-center whitespace-nowrap">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-secondary text-foreground font-medium border border-border">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#f9fafb] text-gray-700 font-mono font-semibold border border-[#e5e7eb]">
                       ব্যাচ {banglaNumber(session.batch)}
                     </span>
                   </td>
-                  <td className="py-4 px-3 text-center whitespace-nowrap font-bold text-foreground">
+                  <td className="py-4 px-3 text-center whitespace-nowrap font-mono font-bold text-black">
                     সেশন {banglaNumber(session.session_number)}
                   </td>
-                  <td className="py-4 px-4 whitespace-nowrap">
+                  <td className="py-4 px-4 whitespace-nowrap font-mono">
                     <div className="flex flex-col">
-                      <span className="font-semibold text-foreground">
+                      <span className="font-semibold text-black">
                         {session.date_formatted}
                       </span>
-                      <span className="text-[11px] text-muted-foreground">
+                      <span className="text-[11px] text-gray-500">
                         {session.time_formatted}
                       </span>
                     </div>
                   </td>
                   <td className="py-4 px-4 text-center whitespace-nowrap">
                     {session.status === "published" && (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#63DB9A]/20 text-black border border-[#63DB9A] font-mono font-bold">
+                        <span className="w-1.5 h-1.5 rounded-full bg-black" />
                         প্রকাশিত
                       </span>
                     )}
                     {session.status === "scheduled" && (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-600" />
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E2E361]/20 text-black border border-[#E2E361] font-mono font-bold">
+                        <span className="w-1.5 h-1.5 rounded-full bg-black" />
                         শিডিউলকৃত
                       </span>
                     )}
                     {session.status === "draft" && (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary text-muted-foreground border border-border font-semibold">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white text-gray-700 border border-[#e5e7eb] font-mono font-medium">
                         খসড়া
                       </span>
                     )}
                   </td>
-                  <td className="py-4 px-3 text-center whitespace-nowrap text-muted-foreground">
+                  <td className="py-4 px-3 text-center whitespace-nowrap text-gray-700 font-mono font-semibold">
                     <div className="inline-flex items-center gap-1">
-                      <Heart className="w-3.5 h-3.5 text-rose-500" />
+                      <Heart className="w-3.5 h-3.5 text-gray-500" />
                       <span>{banglaNumber(session.likes_count)}</span>
                     </div>
                   </td>
-                  <td className="py-4 px-3 text-center whitespace-nowrap text-muted-foreground">
+                  <td className="py-4 px-3 text-center whitespace-nowrap text-gray-700 font-mono font-semibold">
                     <div className="inline-flex items-center gap-1">
-                      <MessageSquare className="w-3.5 h-3.5 text-amber-600" />
+                      <MessageSquare className="w-3.5 h-3.5 text-gray-500" />
                       <span>{banglaNumber(session.comments_count)}</span>
                     </div>
                   </td>
                   <td className="py-4 pl-3 pr-5 text-right whitespace-nowrap">
-                    <div className="flex items-center justify-end gap-1">
+                    <div className="flex items-center justify-end gap-1.5">
                       <Link
                         href={`/admin/sessions/${session.slug}/edit`}
-                        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                        className="p-1.5 rounded-lg border border-[#e5e7eb] bg-white text-gray-600 hover:text-black hover:bg-gray-50 transition-all"
                         title="সম্পাদনা"
                       >
                         <Edit className="w-4 h-4" />
@@ -465,15 +484,15 @@ export function SessionsManagerClient() {
                       <button
                         type="button"
                         onClick={() => handleDuplicate(session)}
-                        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                        className="p-1.5 rounded-lg border border-[#e5e7eb] bg-white text-gray-600 hover:text-black hover:bg-gray-50 transition-all"
                         title="অনুলিপি (Duplicate)"
                       >
                         <Copy className="w-4 h-4" />
                       </button>
                       <button
                         type="button"
-                        onClick={() => handleDelete(session.id)}
-                        className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                        onClick={() => handleDelete(session.id, session.slug)}
+                        className="p-1.5 rounded-lg border border-[#e5e7eb] bg-white text-gray-600 hover:text-black hover:bg-[#FF49D2]/15 transition-all"
                         title="মুছুন"
                       >
                         <Trash2 className="w-4 h-4" />

@@ -31,7 +31,11 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ detail: "অননুমোদিত।" }, { status: 401 });
   }
 
-  const { slug, content } = await request.json();
+  const { slug, content } = await request.json().catch(() => ({}));
+  if (!slug) {
+    return NextResponse.json({ detail: "Slug আবশ্যক।" }, { status: 400 });
+  }
+
   const res = await fetch(`${env.DJANGO_INTERNAL_API_URL}/interactions/sessions/${slug}/note/`, {
     method: "PUT",
     headers: {
@@ -43,4 +47,26 @@ export async function PUT(request: NextRequest) {
 
   const data = await res.json().catch(() => ({}));
   return NextResponse.json(data, { status: res.status });
+}
+
+export async function DELETE(request: NextRequest) {
+  const token = await getAccessToken();
+  if (!token) {
+    return NextResponse.json({ detail: "অননুমোদিত।" }, { status: 401 });
+  }
+
+  const body = await request.json().catch(() => ({}));
+  const slug = body.slug;
+  if (!slug) {
+    return NextResponse.json({ detail: "Slug আবশ্যক।" }, { status: 400 });
+  }
+
+  const res = await fetch(`${env.DJANGO_INTERNAL_API_URL}/interactions/sessions/${slug}/note/`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return NextResponse.json({ success: res.ok }, { status: res.status });
 }
